@@ -17,10 +17,16 @@ int main() {
 	Marker marker(cam.getImageMemory());	
 	setMouseCallback("2D window", onMouse, &marker);
 	while (1) {
-		cam.run();	
-		
-
+		cam.run();
+		//check if has pose data
+		if (model.hasposedata) {
+			marker.reset();
+			model.hasposedata = false;
+			continue;
+		}
+		//marker run
 		if (!marker.run()) return 0;
+		//set exposure
 		if (marker.exposureUp) {
 			cam.setexposure(1);
 			marker.exposureUp = false;
@@ -29,6 +35,7 @@ int main() {
 			cam.setexposure(-1);
 			marker.exposureDown = false;
 		}
+		//need to regist
 		if (marker.needtoregist) {
 			if (model.regist(marker.scalp_pose,marker.ref_pose)) {
 				marker.needtoregist = false;
@@ -41,6 +48,7 @@ int main() {
 				return 0;
 			}
 		}
+		//using reference
 		if (marker.usingref) {
 			model.run(marker.ref_pose);
 			marker.show(model.Projectwindow);

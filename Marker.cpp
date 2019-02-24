@@ -13,7 +13,6 @@ Marker::Marker(char* imagemem) :
 	markers3D_scalp.push_back(Point3f(191, 0, 0.0));
 	markers3D_scalp.push_back(Point3f(191, 141, 0.0));
 	markers3D_scalp.push_back(Point3f(0.0, 141, 0.0));
-	namedWindow("2D window");
 	namedWindow("screen window");
 	namedWindow("project window", WINDOW_NORMAL);
 	moveWindow("project window", 1400, 0);
@@ -42,8 +41,8 @@ int Marker::reset()
 	usingref = false;
 	refselectdone = false;
 	reseting = true;
-	destroyWindow("screen window");
-	destroyWindow("project window");
+	/*destroyWindow("screen window");
+	destroyWindow("project window");*/
 	return 0;
 }
 // initiate markers
@@ -300,7 +299,7 @@ int Marker::run()
 		projframe = Mat(644, 1048, CV_8UC3, Scalar(0, 0, 0));
 		//destroyWindow("2D window");
 	}
-	/*if (!usingref) */cv::imshow("2D window", frame);
+	if (!usingref) cv::imshow("screen window", frame);
 	char c = (char)waitKey(1);
 	if (c == 27) return 0;
 	switch (c) {
@@ -335,7 +334,7 @@ int Marker::show(Mat projimg)
 	copyMakeBorder(projframe, projframe, 0, 0, 0, 96, BORDER_ISOLATED, Scalar::all(0));
 	imshow("screen window", frame);
 	imshow("project window", projframe);
-	waitKey(1);
+	//waitKey(1);
 	return 0;
 }
 
