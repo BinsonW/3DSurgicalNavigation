@@ -26,6 +26,7 @@ Model3D::Model3D() :
 	if (widgetposein.is_open()) {
 		cout << "已成功读取位置数据，请选择参考架追踪点\n\n";
 		widgetposein.read((char *)&pose, sizeof pose);
+		ProjectWindow.setWidgetPose("ptumor", pose);
 		hasposedata = true;
 	}
 	else {
@@ -54,6 +55,7 @@ int Model3D::regist(Affine3d & scalpose, Affine3d & refpose)
 	//save pose data
 	widgetposeout.open("widgetpose.dat", ios_base::out | ios_base::binary);
 	widgetposeout.write((char *)&pose, sizeof pose);
+	widgetposeout.close();
 	cout << "已成功存储位置数据！\n\n";
 	return 1;
 }

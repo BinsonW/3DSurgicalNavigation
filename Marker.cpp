@@ -41,6 +41,7 @@ int Marker::reset()
 	usingref = false;
 	refselectdone = false;
 	reseting = true;
+	headselectdone = false;
 	/*destroyWindow("screen window");
 	destroyWindow("project window");*/
 	return 0;
@@ -283,8 +284,10 @@ int Marker::run()
 
 		needtoregist = true;
 	}
+		//if reseting done
 	if (reseting&&refselectdone) {
 		reseting = false;
+		//headselectdone = true;
 		usingref = true;
 		cout << "重新识别参考架追踪点成功！继续导航\n\n";
 	}
@@ -299,6 +302,7 @@ int Marker::run()
 		projframe = Mat(644, 1048, CV_8UC3, Scalar(0, 0, 0));
 		//destroyWindow("2D window");
 	}
+
 	if (!usingref) cv::imshow("screen window", frame);
 	char c = (char)waitKey(1);
 	if (c == 27) return 0;
@@ -334,7 +338,6 @@ int Marker::show(Mat projimg)
 	copyMakeBorder(projframe, projframe, 0, 0, 0, 96, BORDER_ISOLATED, Scalar::all(0));
 	imshow("screen window", frame);
 	imshow("project window", projframe);
-	//waitKey(1);
 	return 0;
 }
 

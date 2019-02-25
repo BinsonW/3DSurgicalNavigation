@@ -8,14 +8,13 @@ using namespace cv;
 
 void onMouse(int event, int x, int y, int /*flags*/, void* marker) {
 	Marker* marker_ = (Marker*)marker;
-	cout << "test";
 	marker_->inimarkers(event, x, y);
 }
 int main() {
 	Camera cam;
 	Model3D model;
 	Marker marker(cam.getImageMemory());	
-	setMouseCallback("2D window", onMouse, &marker);
+	setMouseCallback("screen window", onMouse, &marker);
 	while (1) {
 		cam.run();
 		//check if has pose data
