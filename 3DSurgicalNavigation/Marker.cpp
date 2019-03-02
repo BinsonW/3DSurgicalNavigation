@@ -17,14 +17,14 @@ Marker::Marker(char* imagemem) :
 	namedWindow("project window", WINDOW_NORMAL);
 	moveWindow("project window", 1400, 0);
 	setWindowProperty("project window", WND_PROP_FULLSCREEN, WINDOW_FULLSCREEN);
-	
+
 	//set scalpmarker detector
 	//headmarkerparams.blobColor = 0;
 	//set refmarker detector
 	//refmarkerparams.blobColor = 255;
 	refmarkerparams.minRepeatability = 1;
 	headmarkerparams.minRepeatability = 1;
-	refmarkerparams.blobColor= 255;
+	refmarkerparams.blobColor = 255;
 	headmarkerparams.blobColor = 0;
 
 	refdetector = SimpleBlobDetector::create(refmarkerparams);
@@ -41,8 +41,6 @@ int Marker::reset()
 	usingref = false;
 	refselectdone = false;
 	reseting = true;
-	/*destroyWindow("screen window");
-	destroyWindow("project window");*/
 	return 0;
 }
 // initiate markers
@@ -51,7 +49,7 @@ int Marker::inimarkers(int event, int x, int y) {
 	if (refboxselect && !refselectdone) {
 		refbox.x = MIN(x, refboxorigin.x);
 		refbox.y = MIN(y, refboxorigin.y);
-		refbox.width = std::abs(x - refboxorigin. x);
+		refbox.width = std::abs(x - refboxorigin.x);
 		refbox.height = std::abs(y - refboxorigin.y);
 		refbox &= Rect(0, 0, frame.cols, frame.rows);
 	}
@@ -66,7 +64,7 @@ int Marker::inimarkers(int event, int x, int y) {
 	switch (event) {
 	case EVENT_LBUTTONDOWN:
 		//参考架框选开始
-		if (!refboxselect && !refselectdone&&!refclickselect) {
+		if (!refboxselect && !refselectdone && !refclickselect) {
 			refboxselect = true;
 			refboxorigin = Point2f(x, y);
 			refbox = Rect(x, y, 0, 0);
@@ -93,7 +91,7 @@ int Marker::inimarkers(int event, int x, int y) {
 			}
 			//不能识别一个追踪点
 			else {
-				
+
 				cout << "参考架追踪点框选结束\n未能识别参考架第1个追踪点\n请重新框选参考架第1个追踪点\n\n";
 				return 0;
 			}
@@ -109,7 +107,7 @@ int Marker::inimarkers(int event, int x, int y) {
 			KeyPoint::convert(refkeypoints, markers2D_ref_ini);
 			//成功识别一个追踪点
 			if (markers2D_ref_ini.size() == 1) {
-				cout << "参考架追踪点点选结束\n已识别参考架第 "<<markers2D_ref.size()+1<<"个追踪点\n";
+				cout << "参考架追踪点点选结束\n已识别参考架第 " << markers2D_ref.size() + 1 << "个追踪点\n";
 				//将追踪点坐标修改为全局坐标
 				markers2D_ref_ini[0].x += refbox.x;
 				markers2D_ref_ini[0].y += refbox.y;
@@ -130,7 +128,7 @@ int Marker::inimarkers(int event, int x, int y) {
 		break;
 	case EVENT_RBUTTONDOWN:
 		//头部框选开始
-		if (!headboxselect && !headselectdone&&!headclickselect) {
+		if (!headboxselect && !headselectdone && !headclickselect) {
 			headboxselect = true;
 			headboxorigin = Point2f(x, y);
 			headbox = Rect(x, y, 0, 0);
@@ -159,7 +157,7 @@ int Marker::inimarkers(int event, int x, int y) {
 			}
 			//不能识别一个追踪点
 			else {
-				
+
 				cout << "头部追踪点框选结束\n未能识别头部第一个追踪点\n请重新框选头部第一个追踪点\n";
 				return 0;
 			}
@@ -201,9 +199,9 @@ int Marker::inimarkers(int event, int x, int y) {
 int Marker::trackmarkers(vector<Point2f>& pointsini, vector<Point2f>& points, vector<KeyPoint> keypoints, Rect box, Ptr<SimpleBlobDetector> detector)
 {
 	int i;
-	for (i = 0 ; i < points.size(); i++) {
+	for (i = 0; i < points.size(); i++) {
 		//定义搜索ROI
-		box.x = points[i].x - box.width/2;
+		box.x = points[i].x - box.width / 2;
 		box.y = points[i].y - box.height / 2;
 		Mat roi = frame(box);
 		//识别ROI内的追踪点，放入暂存容器
@@ -219,7 +217,7 @@ int Marker::trackmarkers(vector<Point2f>& pointsini, vector<Point2f>& points, ve
 		}
 		//不能识别一个追踪点
 		else {
-			
+
 		}
 	}
 	return 1;
@@ -240,29 +238,42 @@ int Marker::drawmarkers(vector<Point2f>& points, Mat & image, Scalar color, Rect
 	}
 	return 0;
 }
-// run thread
+// basic run function
 int Marker::run()
 {
 	camframe.copyTo(frame);
-	frame = frame(Range(160, 804), Range(0, 1048));
+	frame = frame(Range(topedge, bottomedge), Range(0, rightedge));
 	//equalizeHist(frame, frame);
-	frame.copyTo(preframe);
 	//track markers
 	if (!markers2D_ref.empty()) {
 		trackmarkers(markers2D_ref_ini, markers2D_ref, refkeypoints, refbox, refdetector);
 	}
 	if (!markers2D_scalp.empty()) {
-		trackmarkers(markers2D_scalp_ini, markers2D_scalp, headkeypoints ,headbox, headdetector);
+		trackmarkers(markers2D_scalp_ini, markers2D_scalp, headkeypoints, headbox, headdetector);
 	}
 	//convert to colored image
 	cvtColor(frame, frame, cv::COLOR_GRAY2BGR);
 	//draw markers
 	if (!markers2D_ref.empty()) {
-		drawmarkers(markers2D_ref, frame, Scalar(0, 0, 255),refbox);
+		drawmarkers(markers2D_ref, frame, Scalar(0, 0, 255), refbox);
 	}
 	if (!markers2D_scalp.empty() && !usingref) {
-		drawmarkers(markers2D_scalp, frame, Scalar(0, 255, 0),headbox);
+		drawmarkers(markers2D_scalp, frame, Scalar(0, 255, 0), headbox);
 	}
+	return 1;
+
+
+}
+
+
+
+
+
+
+// show camera frame before navigation
+int Marker::ShowCamFrame()
+{
+	run();
 	//register scalp and ref
 	if (headselectdone&&refselectdone && !usingref) {
 		//solve scalp-camera pose
@@ -283,35 +294,19 @@ int Marker::run()
 
 		needtoregist = true;
 	}
-	if (reseting&&refselectdone) {
-		reseting = false;
-		usingref = true;
-		cout << "重新识别参考架追踪点成功！继续导航\n\n";
-	}
-	//solve camera pose using ref
-	if (usingref) {
-		//solve ref-camera pose
-		solvePnP(markers3D_ref, markers2D_ref, CameraMatrix, distCoefficients, rvec_refmar, tvec_refmar);
-		//compute affine matirx
-		Affine3d r((Vec3d)rvec_refmar, (Vec3d)tvec_refmar);
-		ref_pose = r;
-		//construct projact frame
-		projframe = Mat(644, 1048, CV_8UC3, Scalar(0, 0, 0));
-		//destroyWindow("2D window");
-	}
-	if (!usingref) cv::imshow("screen window", frame);
+	cv::imshow("screen window", frame);
 	char c = (char)waitKey(1);
 	if (c == 27) return 0;
 	switch (c) {
 	case 'c':
 		markers2D_scalp.clear();
 		markers2D_ref.clear();
-		refboxselect=false;
-		headboxselect=false;
-		refclickselect=false;
-		headclickselect=false;
-		headselectdone=false;
-		refselectdone=false;
+		refboxselect = false;
+		headboxselect = false;
+		refclickselect = false;
+		headclickselect = false;
+		headselectdone = false;
+		refselectdone = false;
 		break;
 	case 61:
 		exposureUp = true;
@@ -319,23 +314,78 @@ int Marker::run()
 	case 45:
 		exposureDown = true;
 		break;
+	}
+	return 1;
+}
+
+
+// calculate camera pose and show navigation frame
+int Marker::Navigate(Mat projimg)
+{
+	run();
+	if (reseting&&refselectdone) {
+		reseting = false;
+		usingref = true;
+		cout << "重新识别参考架追踪点成功！继续导航\n\n";
+	}
+	//solve ref-camera pose
+	solvePnP(markers3D_ref, markers2D_ref, CameraMatrix, distCoefficients, rvec_refmar, tvec_refmar);
+	//compute affine matirx
+	Affine3d r((Vec3d)rvec_refmar, (Vec3d)tvec_refmar);
+	ref_pose = r;
+
+	//construct projact frame
+	projframe = Mat(bottomedge - topedge, rightedge, CV_8UC3, Scalar(0, 0, 0));
+	frame += projimg;
+	projframe += projimg;
+
+	flip(projframe, projframe, 1);
+	copyMakeBorder(projframe, projframe, 0, 0, 0, blackedge, BORDER_ISOLATED, Scalar::all(0));
+	imshow("screen window", frame);
+	imshow("project window", projframe);
+	char c = (char)waitKey(1);
+	if (c == 27) return 0;
+	switch (c) {
 	case 'r':
 		reset();
 	}
 	return 1;
 }
 
-int Marker::show(Mat projimg)
+int Marker::ShowCamFrameToProjector()
 {
-	frame += projimg;
-	projframe += projimg;
-	
+	run();
+	projframe = frame;
 	flip(projframe, projframe, 1);
-	copyMakeBorder(projframe, projframe, 0, 0, 0, 96, BORDER_ISOLATED, Scalar::all(0));
-	imshow("screen window", frame);
-	imshow("project window", projframe);
-	//waitKey(1);
-	return 0;
+	copyMakeBorder(projframe, projframe, 0, 0, 0, blackedge, BORDER_ISOLATED, Scalar::all(0));
+	cv::imshow("project window", projframe);
+	char c = (char)waitKey(1);
+	if (c == 27) return 0;
+	switch (c) {
+	case 'q':
+		cout << topedge++ << endl;
+		break;
+	case 'w':
+		cout << topedge-- << endl;
+		break;
+	case 'a':
+		cout << bottomedge++ << endl;
+		break;
+	case 's':
+		cout << bottomedge-- << endl;
+		break;
+	case 'e':
+		cout << blackedge++ << endl;
+		break;
+	case 'r':
+		cout << blackedge-- << endl;
+		break;
+	case 'd':
+		cout << rightedge++ << endl;
+		break;
+	case 'f':
+		cout << rightedge-- << endl;
+		break;
+	}
+	return 1;
 }
-
-
