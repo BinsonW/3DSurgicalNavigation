@@ -45,7 +45,6 @@ private:
 	Mat headROI;
 	bool reseting = false;
 	Mat camframe;
-	Mat preframe;
 	Mat tvec_scalmar;
 	Mat tvec_refmar;
 	Mat rvec_scalmar;

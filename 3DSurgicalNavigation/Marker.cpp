@@ -246,7 +246,6 @@ int Marker::run()
 	camframe.copyTo(frame);
 	frame = frame(Range(160, 804), Range(0, 1048));
 	//equalizeHist(frame, frame);
-	frame.copyTo(preframe);
 	//track markers
 	if (!markers2D_ref.empty()) {
 		trackmarkers(markers2D_ref_ini, markers2D_ref, refkeypoints, refbox, refdetector);
