@@ -8,11 +8,10 @@ Model3D::Model3D() :
 	tumor(viz::readCloud("E:\\wubxprogram\\Debug\\Skull.stl"), viz::Color::green()),
 	ProjectWindow("3D Project Window"),
 	ProjectCamera(2.4512e+03, 2.4526e+03, 611.5857, 379.1207, Size(1048, 644)),
-	cylinder(Point3d(95, 70, 0), Point3d(95, 70, 100), 10, 30, viz::Color::green()),
-	sphere(Point3d(95.5, 57.4, -141.91), 25, 10, viz::Color::green())
+	cylinder(Point3d(95, 70, 0), Point3d(95, 70, 100), 10, 30, viz::Color::green())
 {
 	//initiate 3D project window
-	ProjectWindow.showWidget("ptumor", sphere);
+	ProjectWindow.showWidget("ptumor", cylinder);
 	ProjectWindow.spinOnce(1, true);
 	ProjectWindow.setCamera(ProjectCamera);
 	ProjectWindow.setRenderingProperty("ptumor", viz::LINE_WIDTH, viz::REPRESENTATION_SURFACE);

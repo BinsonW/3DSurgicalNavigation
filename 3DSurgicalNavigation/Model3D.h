@@ -11,7 +11,6 @@ private:
 	viz::Camera ProjectCamera;
 	viz::WCloud tumor;
 	viz::WCylinder cylinder;
-	viz::WSphere sphere;
 	ifstream widgetposein;
 	ofstream widgetposeout;
 	//store pose if readed

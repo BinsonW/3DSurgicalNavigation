@@ -23,17 +23,14 @@ public:
 	bool exposureDown = false;
 	Affine3d scalp_pose;
 	Affine3d ref_pose;
-	
+	int run();
+	int show(Mat projimg);
 	Mat frame;
 	Mat projframe;
 	int inimarkers(int event, int x,int y);
 	
 private:
-	int run();
-	int topedge = 160;
-	int bottomedge = 804;
-	int rightedge = 1048;
-	int blackedge = 96;
+	
 	bool refboxselect;
 	bool headboxselect;
 	bool refclickselect;
@@ -72,15 +69,6 @@ private:
 	Mat CameraMatrix = (cv::Mat_<float>(3, 3) << 2.4512e+03, 0.,611.5857, 0.,
 		2.4526e+03, 379.1207, 0., 0., 1.);
 	Mat distCoefficients = (cv::Mat_<float>(4, 1) << -0.0435,-1.8628,0.,0.);
-public:
-	// show camera frame before navigation
-	int ShowCamFrame();
-	
-	// calculate camera pose and show navigation frame
-	int Navigate(Mat projimg);
-
-	//show camera frame to projector for calibration
-	int ShowCamFrameToProjector();
 };
 
 
