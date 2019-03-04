@@ -6,9 +6,9 @@ Marker::Marker(char* imagemem) :
 	camframe(1024, 1280, CV_8UC1, imagemem)
 {
 	markers3D_ref.push_back(Point3f(0.0f, 0.0f, 0));
-	markers3D_ref.push_back(Point3f(100, 0, 0));
-	markers3D_ref.push_back(Point3f(100, 100, 0));
-	markers3D_ref.push_back(Point3f(0.0f, 100, 0));
+	markers3D_ref.push_back(Point3f(75, 0, 0));
+	markers3D_ref.push_back(Point3f(75, 75, 0));
+	markers3D_ref.push_back(Point3f(0.0f, 75, 0));
 	markers3D_scalp.push_back(Point3f(0.0, 0.0, 0.0));
 	markers3D_scalp.push_back(Point3f(191, 0, 0.0));
 	markers3D_scalp.push_back(Point3f(191, 141, 0.0));

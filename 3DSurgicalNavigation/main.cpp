@@ -15,7 +15,7 @@ int main() {
 	Camera cam;
 	Model3D model;
 	Marker marker(cam.getImageMemory());	
-	setMouseCallback("2D window", onMouse, &marker);
+	setMouseCallback("screen window", onMouse, &marker);
 	while (1) {
 		cam.run();
 		//check if has pose data
