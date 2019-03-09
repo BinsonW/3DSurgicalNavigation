@@ -6,7 +6,7 @@ Marker::Marker(char* imagemem) :
 	camframe(1024, 1280, CV_8UC1, imagemem)
 {
 	markers3D_ref.push_back(Point3f(0.0f, 0.0f, 0));
-	markers3D_ref.push_back(Point3f(75, 0, 0));
+	markers3D_ref.push_back(Point3f(150, 37.5, 0));
 	markers3D_ref.push_back(Point3f(75, 75, 0));
 	markers3D_ref.push_back(Point3f(0.0f, 75, 0));
 	markers3D_scalp.push_back(Point3f(0.0, 0.0, 0.0));
@@ -260,6 +260,11 @@ int Marker::run()
 	if (!markers2D_scalp.empty() && !usingref) {
 		drawmarkers(markers2D_scalp, frame, Scalar(0, 255, 0), headbox);
 	}
+	if (reseting&&refselectdone) {
+		reseting = false;
+		usingref = true;
+		cout << "重新识别参考架追踪点成功！继续导航\n\n";
+	}
 	return 1;
 
 
@@ -323,13 +328,9 @@ int Marker::ShowCamFrame()
 int Marker::Navigate(Mat projimg)
 {
 	run();
-	if (reseting&&refselectdone) {
-		reseting = false;
-		usingref = true;
-		cout << "重新识别参考架追踪点成功！继续导航\n\n";
-	}
+	
 	//solve ref-camera pose
-	solvePnP(markers3D_ref, markers2D_ref, CameraMatrix, distCoefficients, rvec_refmar, tvec_refmar);
+	solvePnP(markers3D_ref, markers2D_ref, CameraMatrix, distCoefficients, rvec_refmar, tvec_refmar,!tvec_refmar.empty());
 	//compute affine matirx
 	Affine3d r((Vec3d)rvec_refmar, (Vec3d)tvec_refmar);
 	ref_pose = r;
@@ -343,7 +344,11 @@ int Marker::Navigate(Mat projimg)
 	copyMakeBorder(projframe, projframe, 0, 0, 0, blackedge, BORDER_ISOLATED, Scalar::all(0));
 	imshow("screen window", frame);
 	imshow("project window", projframe);
-	char c = (char)waitKey(1);
+	int c =waitKeyEx(1);
+	if (c != -1) {
+		cout << c << endl;
+	}
+
 	if (c == 27) return 0;
 	switch (c) {
 	case 'r':
