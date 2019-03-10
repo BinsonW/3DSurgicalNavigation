@@ -8,7 +8,6 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/calib3d.hpp"
 #include <iostream>
-
 using namespace std;
 using namespace cv;
 class Marker
