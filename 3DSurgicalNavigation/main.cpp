@@ -36,6 +36,7 @@ int setserialport() {
 	DWORD dwBytesToWrite = (DWORD)strlen(message);
 	DWORD dwBytesWritten = 0;
 	//errorflag = WriteFile(port, message, dwBytesToWrite, dwBytesWritten, NULL);
+	return 1;
 }
 int main() {
 	Camera cam;

@@ -26,13 +26,13 @@ public:
 	Mat frame;
 	Mat projframe;
 	int inimarkers(int event, int x,int y);
-	
-private:
-	int run();
-	int topedge = 160;
+		int topedge = 159;
 	int bottomedge = 804;
 	int rightedge = 1048;
-	int blackedge = 96;
+	int blackedge = 97;
+private:
+	int run();
+
 	bool refboxselect;
 	bool headboxselect;
 	bool refclickselect;

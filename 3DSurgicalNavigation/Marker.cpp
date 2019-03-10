@@ -344,15 +344,16 @@ int Marker::Navigate(Mat projimg)
 	copyMakeBorder(projframe, projframe, 0, 0, 0, blackedge, BORDER_ISOLATED, Scalar::all(0));
 	imshow("screen window", frame);
 	imshow("project window", projframe);
-	int c =waitKeyEx(1);
-	if (c != -1) {
-		cout << c << endl;
-	}
+	int c =waitKey(1);
+	//if (c != -1) {
+	//	cout << c << endl;
+	//}
 
 	if (c == 27) return 0;
 	switch (c) {
 	case 'r':
 		reset();
+		break;
 	}
 	return 1;
 }
