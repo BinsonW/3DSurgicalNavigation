@@ -26,7 +26,7 @@ public:
 	Mat frame;
 	Mat projframe;
 	int inimarkers(int event, int x,int y);
-		int topedge = 159;
+	int topedge = 159;
 	int bottomedge = 804;
 	int rightedge = 1048;
 	int blackedge = 97;

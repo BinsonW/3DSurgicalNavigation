@@ -1,37 +1,20 @@
 #pragma once
-#ifndef _SERIAL_H
-#define _SERIAL_H
-#include <afx.h>
-#include <string>
-
-#include <cstddef>
-#include <cstdlib>
-#include <cassert>
-
-
-// 定义串口类型
-#ifdef _UNICODE
-typedef CString porttype;
-#else
-typedef std::string porttype;
-#endif // _UNICODE
-
-typedef unsigned long ulong;
-typedef unsigned char uchar;
-
-
-class CSerialPort
+#include "pch.h"
+#include <iostream>
+#include <Windows.h>
+#include <stddef.h>
+class SerialPort
 {
 public:
-	CSerialPort(
-		const porttype & portNum,		// 串口号
+	SerialPort(
+		wchar_t* portNum,		// 串口号
 		DWORD baudRate = 9600,			// 波特率
 		BYTE  byteSize = 8,				// 数据位
 		BYTE  parityBit = NOPARITY,		// 检验位
 		BYTE  stopBit = ONESTOPBIT		// 停止位
 	);
 
-	~CSerialPort();
+	~SerialPort();
 
 public:
 
@@ -43,7 +26,7 @@ public:
 private:
 
 	HANDLE m_hComm;		// 通信设备
-	porttype m_portNum; // 串口号
+	wchar_t* m_portNum; // 串口号
 	DWORD m_dwBaudRate; // 波特率
 	BYTE  m_byteSize;	// 数据位
 	BYTE  m_parityBit;  // 校验位
@@ -59,44 +42,39 @@ private:
 	};
 
 	// 设置串口号
-	void setPortNum(const porttype &portNum)
+	void setPortNum(wchar_t* portNum)
 	{
 		this->m_portNum = portNum;
 	}
 	// 设置波特率
-	void setBaudRate(const ulong baudRate)
+	void setBaudRate(const DWORD baudRate)
 	{
 		this->m_dwBaudRate = baudRate;
 	}
 	// 设置数据位
-	void setByteSize(const uchar byteSize)
+	void setByteSize(const BYTE byteSize)
 	{
 		this->m_byteSize = byteSize;
 	}
 	// 设置检验位
-	void setParityBit(const uchar parityBit)
+	void setParityBit(const BYTE parityBit)
 	{
 		this->m_parityBit = parityBit;
 	}
 	// 设置停止位
-	void setStopBit(const uchar stopBit)
+	void setStopBit(const BYTE stopBit)
 	{
 		this->m_stopBit = stopBit;
 	}
 
 	// 获取串口号
-	porttype getPortNum() { return m_portNum; }
+	wchar_t* getPortNum() { return m_portNum; }
 	// 获取波特率
-	ulong getBaudRate() { return m_dwBaudRate; }
+	DWORD getBaudRate() { return m_dwBaudRate; }
 	// 获取数据位
-	uchar getByteSize() { return m_byteSize; }
+	BYTE getByteSize() { return m_byteSize; }
 	// 获取检验位
-	uchar getParityBit() { return m_parityBit; }
+	BYTE getParityBit() { return m_parityBit; }
 	// 获取停止位
-	uchar getStopBit() { return m_stopBit; }
+	BYTE getStopBit() { return m_stopBit; }
 };
-
-
-
-
-#endif		// _SERIAL_H

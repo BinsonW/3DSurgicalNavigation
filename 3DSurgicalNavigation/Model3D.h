@@ -3,6 +3,7 @@
 #include <iostream>
 #include <opencv2/viz.hpp>
 #include <fstream>
+#include <opencv2/opencv.hpp>
 using namespace std;
 using namespace cv;
 class Model3D
@@ -12,6 +13,8 @@ private:
 	viz::WCloud tumor;
 	viz::WCylinder cylinder;
 	viz::WSphere sphere;
+	viz::WImage3D circlegrid3D;
+	Mat circlegrid = imread("circlegrid.jpg");
 	ifstream widgetposein;
 	ofstream widgetposeout;
 	//store pose if readed

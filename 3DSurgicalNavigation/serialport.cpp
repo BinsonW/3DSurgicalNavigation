@@ -1,30 +1,11 @@
 #include "pch.h"
-#include "serialport.h"
-
-CSerialPort::CSerialPort(
-	const porttype & portNum,
-	DWORD baudRate /* = 9600 */,
-	BYTE byteSize /* = 8 */,
-	BYTE parityBit /* = NOPARITY */,
-	BYTE stopBit /* = ONESTOPBIT */
-) : m_portNum(portNum),
-m_dwBaudRate(baudRate),
-m_byteSize(byteSize),
-m_parityBit(parityBit),
-m_stopBit(stopBit),
-m_bOpen(false)
-{
-
-}
-
-CSerialPort::~CSerialPort()
-{
-
-}
+#include "SerialPort.h"
+#include <tchar.h>
+#include <assert.h>
 
 // 打开串口成功,返回 true
 
-bool CSerialPort::openComm()
+bool SerialPort::openComm()
 {
 #ifdef _UNICODE
 	m_hComm = CreateFile(m_portNum,
@@ -96,14 +77,14 @@ bool CSerialPort::openComm()
 
 // 关闭串口
 
-void CSerialPort::closeComm()
+void SerialPort::closeComm()
 {
 	CloseHandle(m_hComm);
 }
 
 
 // 向串口发送数据
-bool CSerialPort::writeToComm(BYTE data[], DWORD dwLength)
+bool SerialPort::writeToComm(BYTE data[], DWORD dwLength)
 {
 #ifdef _DEBUG
 	assert(m_bOpen == true || dwLength > 0);
@@ -141,7 +122,7 @@ bool CSerialPort::writeToComm(BYTE data[], DWORD dwLength)
 
 // 从串口中读取数据
 
-bool CSerialPort::readFromComm(char buffer[], DWORD dwLength)
+bool SerialPort::readFromComm(char buffer[], DWORD dwLength)
 {
 #ifdef _DEBUG
 	assert(m_bOpen == true || dwLength > 0);
@@ -191,4 +172,13 @@ bool CSerialPort::readFromComm(char buffer[], DWORD dwLength)
 	}
 
 	return true;
+}
+
+
+SerialPort::SerialPort(wchar_t * portNum, DWORD baudRate, BYTE byteSize, BYTE parityBit, BYTE stopBit)
+{
+}
+
+SerialPort::~SerialPort()
+{
 }

@@ -3,9 +3,8 @@
 #include "Camera.h"
 #include "Marker.h"
 #include"Model3D.h"
-#include <msports.h>
 #include <String>
-
+#include "SerialPort.h"
 using namespace std;
 using namespace cv;
 
@@ -35,7 +34,8 @@ int setserialport() {
 	char message[] = "test";
 	DWORD dwBytesToWrite = (DWORD)strlen(message);
 	DWORD dwBytesWritten = 0;
-	//errorflag = WriteFile(port, message, dwBytesToWrite, dwBytesWritten, NULL);
+	
+	errorflag = WriteFile(port, message, dwBytesToWrite, &dwBytesWritten, NULL);
 	return 1;
 }
 int main() {
@@ -45,10 +45,11 @@ int main() {
 	setMouseCallback("screen window", onMouse, &marker);
 	//PHCOMDB com;
 	//ComDBOpen(com);
-	if (!setserialport()) {
-		return 0;
-	}
-	
+	//if (!setserialport()) {
+	//	return 0;
+	//}
+	//wchar_t comname[] = "COM1";  
+	//SerialPort com("COM1")
 	while (1) {
 		cam.run();
 		//check if has pose data
