@@ -10,7 +10,7 @@ Model3D::Model3D() :
 	ProjectCamera(2.4512e+03, 2.4526e+03, 611.5857, 379.1207, Size(1048, 645)),
 	cylinder(Point3d(95, 70, 0), Point3d(95, 70, 100), 10, 30, viz::Color::green()),
 	sphere(Point3d(95.5, 57.4, -141.91), 25, 50, viz::Color::green()),
-	circlegrid3D(circlegrid, Size(191, 141),Vec3d(95.5,70.5,0),Vec3d(0,0,-1),Vec3d(0,0,-1))
+	circlegrid3D(circlegrid,Size(360,360))
 {
 	//initiate 3D project window
 	ProjectWindow.showWidget("ptumor", circlegrid3D);
@@ -25,6 +25,7 @@ Model3D::Model3D() :
 	ProjectWindow.setBackgroundColor();
 	// check if widgetpose has been stored
 	widgetposein.open("widgetpose.dat", ios_base::in | ios_base::binary);
+	//copyMakeBorder(circlegrid,circlegrid, 0, 0, 0,1, BORDER_ISOLATED, Scalar::all(0));
 	if (widgetposein.is_open()) {
 		cout << "已成功读取位置数据，请选择参考架追踪点\n\n";
 		widgetposein.read((char *)&pose, sizeof pose);

@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3DSurgicalNavigation", "3DS
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProjecterTest", "Projectertest\Projectertest.vcxproj", "{B6F1A3EE-3BB6-48FD-811D-8F506E4E2F4A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "modifyimage", "modifyimage\modifyimage.vcxproj", "{DB162F88-9234-4438-B1C2-5DDB43AAD9AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{B6F1A3EE-3BB6-48FD-811D-8F506E4E2F4A}.Release|x64.Build.0 = Release|x64
 		{B6F1A3EE-3BB6-48FD-811D-8F506E4E2F4A}.Release|x86.ActiveCfg = Release|Win32
 		{B6F1A3EE-3BB6-48FD-811D-8F506E4E2F4A}.Release|x86.Build.0 = Release|Win32
+		{DB162F88-9234-4438-B1C2-5DDB43AAD9AD}.Debug|x64.ActiveCfg = Debug|x64
+		{DB162F88-9234-4438-B1C2-5DDB43AAD9AD}.Debug|x64.Build.0 = Debug|x64
+		{DB162F88-9234-4438-B1C2-5DDB43AAD9AD}.Debug|x86.ActiveCfg = Debug|Win32
+		{DB162F88-9234-4438-B1C2-5DDB43AAD9AD}.Debug|x86.Build.0 = Debug|Win32
+		{DB162F88-9234-4438-B1C2-5DDB43AAD9AD}.Release|x64.ActiveCfg = Release|x64
+		{DB162F88-9234-4438-B1C2-5DDB43AAD9AD}.Release|x64.Build.0 = Release|x64
+		{DB162F88-9234-4438-B1C2-5DDB43AAD9AD}.Release|x86.ActiveCfg = Release|Win32
+		{DB162F88-9234-4438-B1C2-5DDB43AAD9AD}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

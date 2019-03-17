@@ -13,8 +13,9 @@ private:
 	viz::WCloud tumor;
 	viz::WCylinder cylinder;
 	viz::WSphere sphere;
+	Mat circlegrid = imread("bigcirclegrid.jpg");
 	viz::WImage3D circlegrid3D;
-	Mat circlegrid = imread("circlegrid.jpg");
+	
 	ifstream widgetposein;
 	ofstream widgetposeout;
 	//store pose if readed
