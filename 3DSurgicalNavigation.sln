@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProjecterTest", "Projectert
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "modifyimage", "modifyimage\modifyimage.vcxproj", "{DB162F88-9234-4438-B1C2-5DDB43AAD9AD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Image3Dtest", "Image3Dtest\Image3Dtest.vcxproj", "{5AB5E4F7-12C1-4106-BE07-34B5E3D6FAC0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{DB162F88-9234-4438-B1C2-5DDB43AAD9AD}.Release|x64.Build.0 = Release|x64
 		{DB162F88-9234-4438-B1C2-5DDB43AAD9AD}.Release|x86.ActiveCfg = Release|Win32
 		{DB162F88-9234-4438-B1C2-5DDB43AAD9AD}.Release|x86.Build.0 = Release|Win32
+		{5AB5E4F7-12C1-4106-BE07-34B5E3D6FAC0}.Debug|x64.ActiveCfg = Debug|x64
+		{5AB5E4F7-12C1-4106-BE07-34B5E3D6FAC0}.Debug|x64.Build.0 = Debug|x64
+		{5AB5E4F7-12C1-4106-BE07-34B5E3D6FAC0}.Debug|x86.ActiveCfg = Debug|Win32
+		{5AB5E4F7-12C1-4106-BE07-34B5E3D6FAC0}.Debug|x86.Build.0 = Debug|Win32
+		{5AB5E4F7-12C1-4106-BE07-34B5E3D6FAC0}.Release|x64.ActiveCfg = Release|x64
+		{5AB5E4F7-12C1-4106-BE07-34B5E3D6FAC0}.Release|x64.Build.0 = Release|x64
+		{5AB5E4F7-12C1-4106-BE07-34B5E3D6FAC0}.Release|x86.ActiveCfg = Release|Win32
+		{5AB5E4F7-12C1-4106-BE07-34B5E3D6FAC0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
