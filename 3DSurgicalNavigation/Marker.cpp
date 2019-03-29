@@ -366,31 +366,9 @@ int Marker::ShowCamFrameToProjector()
 	copyMakeBorder(projframe, projframe, 0, 0, 0, blackedge, BORDER_ISOLATED, Scalar::all(0));
 	cv::imshow("project window", projframe);
 	char c = (char)waitKey(1);
-	if (c == 27) return 0;
 	switch (c) {
-	case 'q':
-		cout << topedge++ << endl;
-		break;
-	case 'w':
-		cout << topedge-- << endl;
-		break;
-	case 'a':
-		cout << bottomedge++ << endl;
-		break;
-	case 's':
-		cout << bottomedge-- << endl;
-		break;
-	case 'e':
-		cout << blackedge++ << endl;
-		break;
-	case 'r':
-		cout << blackedge-- << endl;
-		break;
-	case 'd':
-		cout << rightedge++ << endl;
-		break;
-	case 'f':
-		cout << rightedge-- << endl;
+	case 32:
+		waitKey(0);
 		break;
 	}
 	return 1;
