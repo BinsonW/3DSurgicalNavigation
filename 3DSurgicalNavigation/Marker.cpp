@@ -331,6 +331,8 @@ int Marker::Navigate(Mat projimg)
 	
 	//solve ref-camera pose
 	solvePnP(markers3D_ref, markers2D_ref, CameraMatrix, distCoefficients, rvec_refmar, tvec_refmar,!tvec_refmar.empty());
+	cout << rvec_refmar << endl;
+	cout << tvec_refmar << endl;
 	//compute affine matirx
 	Affine3d r((Vec3d)rvec_refmar, (Vec3d)tvec_refmar);
 	ref_pose = r;
