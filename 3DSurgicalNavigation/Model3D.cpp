@@ -23,7 +23,8 @@ Model3D::Model3D() :
 	ProjectWindow.setWidgetPose("ptumor", skullpose);
 	ProjectWindow.setRenderingProperty("ptumor", viz::POINT_SIZE, 1.3);*/
 	ProjectWindow.setBackgroundColor();
-	//ProjectWindow.setOffScreenRendering();
+	ProjectWindow.spinOnce();
+	ProjectWindow.setOffScreenRendering();
 	// check if widgetpose has been stored
 	widgetposein.open("widgetpose.dat", ios_base::in | ios_base::binary);
 	if (widgetposein.is_open()) {
@@ -56,8 +57,8 @@ int Model3D::regist(Affine3d & scalpose, Affine3d & refpose)
 	pose = refpose.inv()*scalpose;
 	ProjectWindow.setWidgetPose("ptumor", pose);
 	//save pose data
-	widgetposeout.open("widgetpose.dat", ios_base::out | ios_base::binary);
-	widgetposeout.write((char *)&pose, sizeof pose);
+	//widgetposeout.open("widgetpose.dat", ios_base::out | ios_base::binary);
+	//widgetposeout.write((char *)&pose, sizeof pose);
 	widgetposeout << flush;
 	cout << "已成功存储位置数据！\n\n";
 	return 1;

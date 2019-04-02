@@ -65,10 +65,29 @@ private:
 	Ptr<SimpleBlobDetector> headdetector;
 	int drawmarkers(vector<Point2f>& points, Mat & image, Scalar color, Rect box);
 	int trackmarkers(vector<Point2f>& pointsini, vector<Point2f>& points, vector<KeyPoint> keypoints, Rect box, Ptr<SimpleBlobDetector> detector);
-	
-	Mat CameraMatrix = (cv::Mat_<float>(3, 3) << 2.4183e+3, 0.,575.76, 0.,
-		2.4174e+03, 554.6358, 0., 0., 1.);
-	Mat distCoefficients = (cv::Mat_<float>(4, 1) << -0.0805,-0.3996,/*3.6551,*/9.5535e-4,-0.005);
+	//matlab calibration k3
+
+	//Mat CameraMatrix = (cv::Mat_<float>(3, 3) << 2.4183e+3, 0.,575.76, 0.,
+	//	2.4174e+03, 554.6358, 0., 0., 1.);	
+	//Mat distCoefficients = (cv::Mat_<float>(5, 1) << -0.0805,-0.3996,9.5535e-4,-0.005,3.6551);
+
+	//matlab calibration k2
+
+	Mat CameraMatrix = (cv::Mat_<float>(3, 3) << 2.4183e+3, 0., 575.7487, 0.,
+		2.4174e+03, 554.6314, 0., 0., 1.);
+	Mat distCoefficients = (cv::Mat_<float>(4, 1) << -0.0835, -0.1993, 9.5452e-4, -0.005);
+
+	//opencv calibration
+
+	//Mat CameraMatrix = (cv::Mat_<float>(3, 3) << 2.4188753857320721e+03, 0., 5.7164331421986378e+02, 0.,
+	//	2.4188753857320721e+03, 5.5079334958877484e+02, 0., 0., 1.);
+	//Mat distCoefficients = (cv::Mat_<float>(5, 1) << -5.8824500888140119e-02, -1.7593331269974366e+00,
+	//	2.7856122002159212e-04, -5.2874507348734728e-03,
+	//	2.9698538736651852e+01);
+
+	////zero dist
+
+	//Mat distCoefficients = Mat::zeros(Size(4, 1), CV_32FC1);
 public:
 	// show camera frame before navigation
 	int ShowCamFrame();

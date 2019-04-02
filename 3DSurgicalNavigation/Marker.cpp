@@ -11,8 +11,8 @@ Marker::Marker(char* imagemem) :
 	//markers3D_ref.push_back(Point3f(0.0f, 75, 0));
 	markers3D_ref.push_back(Point3f(0.0f, 0.0f, 0));
 	markers3D_ref.push_back(Point3f(100, 0, 0));
-	markers3D_ref.push_back(Point3f(0.0f, 100, 0));
-	markers3D_ref.push_back(Point3f(0.0f, 100, 100));
+	markers3D_ref.push_back(Point3f(100, 100, 0));
+	markers3D_ref.push_back(Point3f(0, 100, 0));
 	markers3D_scalp.push_back(Point3f(0.0, 0.0, 0.0));
 	markers3D_scalp.push_back(Point3f(191, 0, 0.0));
 	markers3D_scalp.push_back(Point3f(191, 141, 0.0));
@@ -34,7 +34,7 @@ Marker::Marker(char* imagemem) :
 	refdetector = SimpleBlobDetector::create(refmarkerparams);
 	headdetector = SimpleBlobDetector::create(headmarkerparams);
 	//undistort map
-	initUndistortRectifyMap(CameraMatrix, distCoefficients, noArray(), noArray(), Size(1280, 1024), CV_16SC2, undistortmap1, undistortmap2);
+	initUndistortRectifyMap(CameraMatrix, distCoefficients, noArray(), getOptimalNewCameraMatrix(CameraMatrix, distCoefficients, Size(1280,1024), 1, Size(1280, 1024), 0) , Size(1280, 1024), CV_16SC2, undistortmap1, undistortmap2);
 }
 Marker::~Marker()
 {
@@ -248,7 +248,11 @@ int Marker::drawmarkers(vector<Point2f>& points, Mat & image, Scalar color, Rect
 int Marker::run()
 {
 	camframe.copyTo(frame);
-	remap(frame, frame, undistortmap1, undistortmap2, INTER_NEAREST);
+	//imshow("screen window", frame);
+	//waitKey(0);
+	//remap(frame, frame, undistortmap1, undistortmap2, INTER_NEAREST);
+	//imshow("screen window", frame);
+	//waitKey(0);
 	//frame = frame(Range(topedge, bottomedge), Range(0, rightedge));
 	//track markers
 	if (!markers2D_ref.empty()) {
