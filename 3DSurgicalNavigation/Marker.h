@@ -23,8 +23,7 @@ public:
 	Affine3d scalp_pose;
 	Affine3d ref_pose;
 	
-	Mat frame;
-	Mat projframe;
+
 	int inimarkers(int event, int x,int y); 
 	int topedge = 159;
 	int bottomedge = 804;
@@ -32,21 +31,26 @@ public:
 	int blackedge = 97;
 private:
 	int run();
-
+	bool reseting = false;
 	bool refboxselect;
 	bool headboxselect;
 	bool refclickselect;
 	bool headclickselect;
 	bool headselectdone;
 	bool refselectdone;
+	bool keepregister=true;
 	Point2f refboxorigin;
 	Point2f headboxorigin;
 	Rect refbox;
 	Rect headbox;
+	Mat frame;
+	Mat frame_clip;
+	Mat projframe;
 	Mat refROI;
-	Mat headROI;
-	bool reseting = false;
+	Mat headROI;	
 	Mat camframe;
+	Mat undistortmap1;
+	Mat undistortmap2;
 	Mat tvec_scalmar;
 	Mat tvec_refmar;
 	Mat rvec_scalmar;
@@ -68,9 +72,9 @@ private:
 	int drawmarkers(vector<Point2f>& points, Mat & image, Scalar color, Rect box);
 	int trackmarkers(vector<Point2f>& pointsini, vector<Point2f>& points, vector<KeyPoint> keypoints, Rect box, Ptr<SimpleBlobDetector> detector);
 	
-	Mat CameraMatrix = (cv::Mat_<float>(3, 3) << 2.4512e+03, 0.,611.5857, 0.,
-		2.4526e+03, 379.1207, 0., 0., 1.);
-	Mat distCoefficients = (cv::Mat_<float>(4, 1) << -0.0435,-1.8628,0.,0.);
+	Mat CameraMatrix = (cv::Mat_<float>(3, 3) << 2.4183e+3, 0.,575.76, 0.,
+		2.4174e+03, 554.6358, 0., 0., 1.);
+	Mat distCoefficients = (cv::Mat_<float>(4, 1) << -0.0805,-0.3996,3.6551,9.5535e-4,-0.005);
 public:
 	// show camera frame before navigation
 	int ShowCamFrame();

@@ -29,6 +29,8 @@ Marker::Marker(char* imagemem) :
 
 	refdetector = SimpleBlobDetector::create(refmarkerparams);
 	headdetector = SimpleBlobDetector::create(headmarkerparams);
+	//undistort map
+	initUndistortRectifyMap(CameraMatrix, distCoefficients, noArray(), noArray(), Size(1280, 1024), CV_16SC2, undistortmap1, undistortmap2);
 }
 Marker::~Marker()
 {
@@ -241,9 +243,9 @@ int Marker::drawmarkers(vector<Point2f>& points, Mat & image, Scalar color, Rect
 // basic run function
 int Marker::run()
 {
-	camframe.copyTo(frame);
-	frame = frame(Range(topedge, bottomedge), Range(0, rightedge));
-	//equalizeHist(frame, frame);
+	camframe.copyTo(frame); 
+	remap(frame, frame, undistortmap1, undistortmap2, INTER_NEAREST);
+	//frame = frame(Range(topedge, bottomedge), Range(0, rightedge));
 	//track markers
 	if (!markers2D_ref.empty()) {
 		trackmarkers(markers2D_ref_ini, markers2D_ref, refkeypoints, refbox, refdetector);
@@ -290,14 +292,12 @@ int Marker::ShowCamFrame()
 		Affine3d r((Vec3d)rvec_refmar, (Vec3d)tvec_refmar);
 		scalp_pose = s;
 		ref_pose = r;
-
-		markers2D_scalp.clear();
 		cout << "目标点全部选取完毕，已取消头部追踪\n\n";
-
-		destroyWindow("2D window");
 		cout << "已关闭选取窗口\n\n";
-
-		needtoregist = true;
+		if (!keepregister) {
+			markers2D_scalp.clear();
+			needtoregist = true;
+		}
 	}
 	cv::imshow("screen window", frame);
 	char c = (char)waitKey(1);
@@ -338,19 +338,17 @@ int Marker::Navigate(Mat projimg)
 	ref_pose = r;
 
 	//construct projact frame
+	frame_clip=frame(Range(topedge, bottomedge), Range(0, rightedge));
+	projimg=projimg(Range(topedge, bottomedge), Range(0, rightedge));
 	projframe = Mat(bottomedge - topedge, rightedge, CV_8UC3, Scalar(0, 0, 0));
-	frame += projimg;
+	frame_clip += projimg;
 	projframe += projimg;
-
 	flip(projframe, projframe, 1);
 	copyMakeBorder(projframe, projframe, 0, 0, 0, blackedge, BORDER_ISOLATED, Scalar::all(0));
+	rectangle(frame, Point(0, topedge), Point(rightedge, bottomedge),Scalar(0,255,0));
 	imshow("screen window", frame);
 	imshow("project window", projframe);
 	int c =waitKey(1);
-	//if (c != -1) {
-	//	cout << c << endl;
-	//}
-
 	if (c == 27) return 0;
 	switch (c) {
 	case 'r':
