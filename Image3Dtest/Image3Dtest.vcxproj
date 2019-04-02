@@ -23,7 +23,7 @@
     <ProjectGuid>{5AB5E4F7-12C1-4106-BE07-34B5E3D6FAC0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Image3Dtest</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

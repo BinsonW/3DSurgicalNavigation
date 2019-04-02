@@ -1,15 +1,9 @@
 #pragma once
-#include "opencv2/core/traits.hpp"
-#include "opencv2/core/types.hpp"
-#include "opencv2/features2d.hpp"
-#include "opencv2/video/tracking.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/videoio.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/calib3d.hpp"
+#include "opencv2/opencv.hpp"
 #include <iostream>
 using namespace std;
 using namespace cv;
+using std::vector;
 class Marker
 {
 public:
@@ -38,7 +32,7 @@ private:
 	bool headclickselect;
 	bool headselectdone;
 	bool refselectdone;
-	bool keepregister=true;
+	//bool keepregister=true;
 	Point2f refboxorigin;
 	Point2f headboxorigin;
 	Rect refbox;
@@ -74,7 +68,7 @@ private:
 	
 	Mat CameraMatrix = (cv::Mat_<float>(3, 3) << 2.4183e+3, 0.,575.76, 0.,
 		2.4174e+03, 554.6358, 0., 0., 1.);
-	Mat distCoefficients = (cv::Mat_<float>(4, 1) << -0.0805,-0.3996,3.6551,9.5535e-4,-0.005);
+	Mat distCoefficients = (cv::Mat_<float>(4, 1) << -0.0805,-0.3996,/*3.6551,*/9.5535e-4,-0.005);
 public:
 	// show camera frame before navigation
 	int ShowCamFrame();

@@ -5,15 +5,19 @@
 Marker::Marker(char* imagemem) :
 	camframe(1024, 1280, CV_8UC1, imagemem)
 {
+	//markers3D_ref.push_back(Point3f(0.0f, 0.0f, 0));
+	//markers3D_ref.push_back(Point3f(150, 37.5, 0));
+	//markers3D_ref.push_back(Point3f(75, 75, 0));
+	//markers3D_ref.push_back(Point3f(0.0f, 75, 0));
 	markers3D_ref.push_back(Point3f(0.0f, 0.0f, 0));
-	markers3D_ref.push_back(Point3f(150, 37.5, 0));
-	markers3D_ref.push_back(Point3f(75, 75, 0));
-	markers3D_ref.push_back(Point3f(0.0f, 75, 0));
+	markers3D_ref.push_back(Point3f(100, 0, 0));
+	markers3D_ref.push_back(Point3f(0.0f, 100, 0));
+	markers3D_ref.push_back(Point3f(0.0f, 100, 100));
 	markers3D_scalp.push_back(Point3f(0.0, 0.0, 0.0));
 	markers3D_scalp.push_back(Point3f(191, 0, 0.0));
 	markers3D_scalp.push_back(Point3f(191, 141, 0.0));
 	markers3D_scalp.push_back(Point3f(0.0, 141, 0.0));
-	namedWindow("screen window");
+	namedWindow("screen window",0);
 	namedWindow("project window", WINDOW_NORMAL);
 	moveWindow("project window", 1400, 0);
 	setWindowProperty("project window", WND_PROP_FULLSCREEN, WINDOW_FULLSCREEN);
@@ -243,7 +247,7 @@ int Marker::drawmarkers(vector<Point2f>& points, Mat & image, Scalar color, Rect
 // basic run function
 int Marker::run()
 {
-	camframe.copyTo(frame); 
+	camframe.copyTo(frame);
 	remap(frame, frame, undistortmap1, undistortmap2, INTER_NEAREST);
 	//frame = frame(Range(topedge, bottomedge), Range(0, rightedge));
 	//track markers
@@ -294,10 +298,10 @@ int Marker::ShowCamFrame()
 		ref_pose = r;
 		cout << "目标点全部选取完毕，已取消头部追踪\n\n";
 		cout << "已关闭选取窗口\n\n";
-		if (!keepregister) {
-			markers2D_scalp.clear();
-			needtoregist = true;
-		}
+
+		//markers2D_scalp.clear();
+		needtoregist = true;
+
 	}
 	cv::imshow("screen window", frame);
 	char c = (char)waitKey(1);
@@ -328,9 +332,9 @@ int Marker::ShowCamFrame()
 int Marker::Navigate(Mat projimg)
 {
 	run();
-	
+
 	//solve ref-camera pose
-	solvePnP(markers3D_ref, markers2D_ref, CameraMatrix, distCoefficients, rvec_refmar, tvec_refmar,!tvec_refmar.empty());
+	solvePnP(markers3D_ref, markers2D_ref, CameraMatrix, distCoefficients, rvec_refmar, tvec_refmar, !tvec_refmar.empty());
 	cout << rvec_refmar << endl;
 	cout << tvec_refmar << endl;
 	//compute affine matirx
@@ -338,17 +342,17 @@ int Marker::Navigate(Mat projimg)
 	ref_pose = r;
 
 	//construct projact frame
-	frame_clip=frame(Range(topedge, bottomedge), Range(0, rightedge));
-	projimg=projimg(Range(topedge, bottomedge), Range(0, rightedge));
+	frame_clip = frame(Range(topedge, bottomedge), Range(0, rightedge));
+	projimg = projimg(Range(topedge, bottomedge), Range(0, rightedge));
 	projframe = Mat(bottomedge - topedge, rightedge, CV_8UC3, Scalar(0, 0, 0));
 	frame_clip += projimg;
 	projframe += projimg;
 	flip(projframe, projframe, 1);
 	copyMakeBorder(projframe, projframe, 0, 0, 0, blackedge, BORDER_ISOLATED, Scalar::all(0));
-	rectangle(frame, Point(0, topedge), Point(rightedge, bottomedge),Scalar(0,255,0));
+	rectangle(frame, Point(0, topedge), Point(rightedge, bottomedge), Scalar(0, 255, 0));
 	imshow("screen window", frame);
 	imshow("project window", projframe);
-	int c =waitKey(1);
+	int c = waitKey(1);
 	if (c == 27) return 0;
 	switch (c) {
 	case 'r':
