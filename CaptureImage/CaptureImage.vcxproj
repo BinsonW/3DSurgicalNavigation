@@ -23,7 +23,7 @@
     <ProjectGuid>{7C4C16AB-FE9F-4AA3-A677-178A68330A8C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>CaptureImage</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

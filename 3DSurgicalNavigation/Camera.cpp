@@ -2,10 +2,11 @@
 #include "Camera.h"
 
 
-Camera::Camera()
+Camera::Camera(const String path)
 {
+	readcamparams(path);
 	if (inicamera()) {
-		cout << "InitCamera All down!\n";
+		cout << "InitCamera complete!\n";
 	}
 	else
 		cout << "fail to InitCamera!\n";
@@ -61,6 +62,18 @@ int Camera::inicamera()
 	}
 	is_SetColorMode(hcam, IS_CM_MONO8);
 	is_SetDisplayMode(hcam, IS_SET_DM_DIB);
+	return 1;
+}
+int Camera::readcamparams(const String path)
+{
+	FileStorage fs(path, FileStorage::READ);
+	if (!fs.isOpened()) {
+		cout << "Can't open camera intrinsic file!";
+	}
+	fs["camera_matrix"] >> cammat;
+	fs["distortion_coefficients"] >> camdiscoeff;
+	fs["image_width"] >> imgsize.width;
+	fs["image_height"] >> imgsize.height;
 	return 1;
 }
 int Camera::run()

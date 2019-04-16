@@ -21,7 +21,7 @@
     <ClInclude Include="..\3DSurgicalNavigation\Camera.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\3DSurgicalNavigation\Marker.h">
+    <ClInclude Include="..\3DSurgicalNavigation\Frame.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,7 +35,7 @@
     <ClCompile Include="..\3DSurgicalNavigation\Camera.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\3DSurgicalNavigation\Marker.cpp">
+    <ClCompile Include="..\3DSurgicalNavigation\Frame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

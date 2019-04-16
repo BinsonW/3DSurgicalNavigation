@@ -21,13 +21,16 @@
     <ClInclude Include="Camera.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Marker.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Model3D.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SerialPort.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Frame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Webcam.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,13 +44,19 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Marker.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Model3D.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SerialPort.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Frame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Webcam.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="marker.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
