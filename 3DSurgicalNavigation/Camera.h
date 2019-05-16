@@ -30,5 +30,6 @@ public:
 	int run();
 	double ExposureTime=33;
 	int setexposure(int param);
+	friend  class Frame;
 };
 

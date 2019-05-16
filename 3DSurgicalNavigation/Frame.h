@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include "Camera.h"
 using namespace std;
 using namespace cv;
 class Frame
@@ -13,10 +14,7 @@ private:
 	public:
 		marker();
 		~marker();
-		bool boxselect;
-		bool clickselect;
-		bool selectdone;
-		const int marnum = 4;
+		int marnum = 4;
 		const int meanimgnum=3;
 		float distance=1000;
 		float size = 0;
@@ -45,7 +43,7 @@ private:
 		bool calarea();
 		bool calmean();
 		bool iseqsize();
-	}rmar,hmar,dmar,glmar;
+	};
 	enum marposition {
 		LEFT,RIGHT,UP,DOWN,MID
 	};
@@ -58,9 +56,9 @@ private:
 	};
 	Rect projroi;
 	Size projsize;
-	bool reseting = false;
+	bool refatleft = true;
 	//bool keepregister=true;
-	Mat frame,frame_clip,projframe,camframe,undistortmap1,undistortmap2,CameraMatrix,distCoefficients; 
+	Mat frame,frame_clip,projimg_add,undistortmap1,undistortmap2,CameraMatrix,distCoefficients; 
 	Size imgsize_Cam;
 	//webcam
 	VideoCapture cap;
@@ -70,31 +68,25 @@ private:
 	int trackmarkers(marker& mar);
 	bool capframe();
 	void findpixrange();
-	bool inimarparam(marker& mar);
-	void calbrirange(Frame::marker & mar);
-	bool globalsearch(marker& mar, marposition p);
-	float findmanytimes(marker& mar);
+	void calbrirange(marker & mar);
+	bool findmanytimes(marker& mar);
 	bool calbestbrirange(marker& mar);
+	bool calHRpose();
+	bool calRpose();
 public:
 	Frame(char* imagemem,const Mat cammat,const Mat camdiscoeff,const Size imgsize_cam);
 	Frame(VideoCapture);
 	~Frame();
-	int reset();
-	bool usingref = false;
-	bool needtoregist = false;
-	bool exposureUp = false;
-	bool exposureDown = false;
-	// show camera frame before navigation
-	int ShowCamFrame();
-	
+	Affine3d headpose;
+	Affine3d refpose;
+	marker rmar, hmar, dmar, glmar;
 	// calculate camera pose and show navigation frame
-	int Navigate(Mat projimg);
-
+	bool Navigate(Mat projimg);
 	//show camera frame to projector for calibration
 	int ShowCamFrameToProjector();
-	int run();
-
-	
+	bool inimarparam(marker& mar);
+	bool globalsearch(marker& mar);
+	bool seperatemar();
 };
 
 

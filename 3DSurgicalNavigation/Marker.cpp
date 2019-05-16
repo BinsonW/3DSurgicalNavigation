@@ -18,11 +18,14 @@ bool Frame::marker::clear() {
 }
 bool Frame::marker::sortp()
 {
-	//sort y
-	sort(p2Dmean.begin(), p2Dmean.end(), Frame::marker::compy);
 	//sort x
-	sort(p2Dmean.begin(),p2Dmean.begin()+1 , Frame::marker::compx);
-	sort(p2Dmean.begin()+2, p2Dmean.begin()+3, Frame::marker::compx);
+	sort(p2Dlast.begin(), p2Dlast.end(), Frame::marker::compx);
+	//sort y
+	auto ptr = p2Dlast.begin();
+	while (p2Dlast.end() != (ptr + 1)) {
+		sort(ptr, ptr + 1, Frame::marker::compx);
+		ptr=ptr+2;
+	}
 	return true;
 }
 bool Frame::marker::compx(KeyPoint i, KeyPoint j)

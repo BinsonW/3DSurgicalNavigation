@@ -14,50 +14,34 @@ int main() {
 	Webcam cam;
 	Frame frame(cam.cap);
 	while (1) {
-		if(2==frame.run()) continue;
+		if (2 == frame.run()) continue;
 	}
 #else
 	Camera cam("3240N_MatlabCalib.yml");
-	Frame frame(cam.getImageMemory(),cam.getcammat,cam.getcamdiscoeff,cam.getimgsize);
+	Frame frame(cam.getImageMemory(), cam.getcammat, cam.getcamdiscoeff, cam.getimgsize);
 	Model3D model;
-
+	//regist
 	while (1) {
 		//check if has pose data
 		if (model.hasposedata) {
-			marker.reset();
+			frame.reset();
 			model.hasposedata = false;
-			continue;
+			break;
 		}
-		//show camera frame before navigation
-		if (!marker.usingref) {
-			marker.ShowCamFrame();
-			//set exposure
-			if (marker.exposureUp) {
-				cam.setexposure(1);
-				marker.exposureUp = false;
-			}
-			if (marker.exposureDown) {
-				cam.setexposure(-1);
-				marker.exposureDown = false;
-			}
-			//need to regist
-			if (marker.needtoregist) {
-				if (model.regist(marker.scalp_pose, marker.ref_pose)) {
-					marker.needtoregist = false;
-					//marker.usingref = true;
-					cout << "参考架与头部配准成功！\n开始使用参考架导航！\n\n";
-					continue;
-				}
-				else {
-					cout << "参考架与头部配准失败！\n\n";
-					return 0;
-				}
-			}
+		
+		//need to regist
+		if (frame.inimarparam(frame.glmar)) {
+			model.regist(frame.headpose, frame.refpose);
+			cout << "患者位置注册成功！ 开始使用参考架导航！\n\n";
+			break;
 		}
-		//navigate use reference
-		else {
-			model.run(marker.ref_pose);
-			marker.Navigate(model.Projectwindow);
+	}
+	//navigate
+	while (1) {
+		cam.run();
+		model.run(frame.refpose);
+		if (!frame.Navigate(model.Projectwindow)) {
+			
 		}
 	}
 #endif
