@@ -18,19 +18,19 @@ int main() {
 	}
 #else
 	Camera cam("3240N_MatlabCalib.yml");
-	Frame frame(cam.getImageMemory(), cam.getcammat, cam.getcamdiscoeff, cam.getimgsize);
+	Frame frame(cam.getImageMemory(), cam.getcammat(), cam.getcamdiscoeff(), cam.getimgsize());
 	Model3D model;
 	//regist
 	while (1) {
+		cam.run();
 		//check if has pose data
 		if (model.hasposedata) {
-			frame.reset();
 			model.hasposedata = false;
+			frame.registed = true;
 			break;
-		}
-		
+		}		
 		//need to regist
-		if (frame.inimarparam(frame.glmar)) {
+		if (frame.inimarparam()) {
 			model.regist(frame.headpose, frame.refpose);
 			cout << "患者位置注册成功！ 开始使用参考架导航！\n\n";
 			break;
@@ -41,7 +41,16 @@ int main() {
 		cam.run();
 		model.run(frame.refpose);
 		if (!frame.Navigate(model.Projectwindow)) {
-			
+			//局部搜索失败，全局搜索
+			cam.run();
+			if (!frame.globalsearch())
+			{
+				//全局搜索失败，初始化参数重新搜索
+				while (frame.inimarparam()) {
+					Sleep(3000);
+					cam.run();
+				}
+			}
 		}
 	}
 #endif

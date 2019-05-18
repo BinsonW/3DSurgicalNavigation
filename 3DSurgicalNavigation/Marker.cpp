@@ -7,15 +7,6 @@ Frame::marker::marker() {
 	detector = SimpleBlobDetector::create(params);
 }
 Frame::marker::~marker() {}
-bool Frame::marker::clear() {
-	boxselect = false;
-	clickselect = false;
-	selectdone = false;
-	distance = 0;
-	p2Dlast.clear();
-	p2Dmean.clear();
-	return 0;
-}
 bool Frame::marker::sortp()
 {
 	//sort x

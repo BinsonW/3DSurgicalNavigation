@@ -48,8 +48,8 @@ Frame::Frame(VideoCapture capture) {
 
 	//initiate frame
 	findpixrange();
-	inimarparam(dmar);
-	globalsearch(dmar);
+	inimarparam();
+	globalsearch();
 }
 Frame::~Frame()
 {
@@ -60,76 +60,96 @@ void Frame::findpixrange()
 	minMaxIdx(frame, &darkpix, &bripix);
 	cout << "亮度范围 " << darkpix << " " << bripix << endl;
 }
-bool Frame::inimarparam(marker& mar)
+bool Frame::inimarparam()
 {
 	imshow("screenwindow", frame);
 	waitKey(1);
 	//initiate frame
 	findpixrange();
 	int ftimes = 0;
-	mar.params.filterByColor = true;
-	mar.params.blobColor = 255;
-	mar.params.filterByArea = true;
-	mar.params.filterByCircularity = true;
-	mar.params.minCircularity = 0.6;
-	mar.params.minInertiaRatio = 0.5;
-	mar.params.minConvexity = 0.94;
-	mar.params.minRepeatability = 3;
-	mar.color = Scalar(0, 255, 0);
+	glmar.params.filterByColor = true;
+	glmar.params.blobColor = 255;
+	glmar.params.filterByArea = true;
+	glmar.params.filterByCircularity = true;
+	glmar.params.minCircularity = 0.6;
+	glmar.params.minInertiaRatio = 0.5;
+	glmar.params.minConvexity = 0.94;
+	glmar.params.minRepeatability = 3;
+	glmar.color = Scalar(0, 255, 0);
 
-	mar.params.minThreshold = bripix - mar.threoffset - mar.threrange;
-	mar.params.maxThreshold = bripix - mar.threoffset;
-	mar.params.thresholdStep = mar.threstep;
+	glmar.params.minThreshold = bripix - glmar.threoffset - glmar.threrange;
+	glmar.params.maxThreshold = bripix - glmar.threoffset;
+	glmar.params.thresholdStep = glmar.threstep;
 	while (1)
 	{
-		mar.params.minThreshold = mar.params.minThreshold - 20;
-		mar.params.maxThreshold = mar.params.maxThreshold - 20;
-		mar.params.minThreshold = mar.params.minThreshold > darkpix ? mar.params.minThreshold : darkpix;
-		if (mar.params.minThreshold == darkpix) {
+		glmar.params.minThreshold = glmar.params.minThreshold - 20;
+		glmar.params.maxThreshold = glmar.params.maxThreshold - 20;
+		glmar.params.minThreshold = glmar.params.minThreshold > darkpix ? glmar.params.minThreshold : darkpix;
+		if (glmar.params.minThreshold == darkpix) {
 			cout << "未能检测到任何marker\n";
 			return false;
 		}
-		mar.detector = SimpleBlobDetector::create(mar.params);
-		mar.detector->detect(frame, mar.p2Dlast);
-		cout << "二值化阈值范围: " << mar.params.minThreshold << " ` " << mar.params.maxThreshold << endl;
-		cout << "找到 " << mar.p2Dlast.size() << " 个点\n";
-		//连续找到多次
-		if (mar.marnum == mar.p2Dlast.size() /*&& mar.iseqsize()*/)
+		glmar.detector = SimpleBlobDetector::create(glmar.params);
+		glmar.detector->detect(frame, glmar.p2Dlast);
+		cout << "二值化阈值范围: " << glmar.params.minThreshold << " ` " << glmar.params.maxThreshold << endl;
+		cout << "找到 " << glmar.p2Dlast.size() << " 个点\n";
+		if (8 == glmar.p2Dlast.size())
 		{
-			if (findmanytimes(mar) == true) {
-				cout << "marker参数初始化成功！\n";
-				break;
-			}
+			cout << "marker参数初始化成功！\n";
+			glmar.sortp();
+			break;
 		}
+		else if (4 == glmar.p2Dlast.size() && registed)
+		{
+			cout << "marker参数初始化成功！\n";
+			glmar.sortp();
+			break;
+		}
+
 	}
-	//计算搜索距离
-	mar.caldist();
-	//计算阈值面积并设置
-	mar.calarea();
-	//计算搜索的二值化阈值范围
-	calbrirange(mar);
-	cout << "marker直径 " << mar.size << " 个像素，平均亮度 " << mpix[0];
-	cout << " ,周围像素平均亮度 " << surpix[0] << endl;
-	//搜索n次并压入容器
-	mar.detector = SimpleBlobDetector::create(mar.params);
-	for (size_t i = 0; i < mar.meanimgnum; i++)
-	{
-		mar.detector->detect(frame, mar.p2Dlast);
-		mar.sortp();
-		mar.p2Dtotal.push_back(mar.p2Dlast);
-	}
-	//计算mean
-	mar.calmean();
-	//8个marker？
-	if (mar.marnum == 8) {
-		seperatemar();
+	//unregisted
+	if (!registed) {
+		//搜索n次并压入容器
+		for (size_t i = 0; i < glmar.meanimgnum; i++)
+		{
+			glmar.p2Dtotal.push_back(glmar.p2Dlast);			
+			glmar.detector->detect(frame, glmar.p2Dlast);
+			glmar.sortp();
+		}
+		//计算mean
+		glmar.calmean();
+		seperatemar_p2Dmean();
 		calHRpose();
+		return true;
 	}
-	//4个marker
+	//registed
 	else {
-		calRpose();
+		if (8 == glmar.p2Dlast.size()) {
+			seperatemar_p2Dlast();
+		}
+		else {
+			rmar.p2Dlast = glmar.p2Dlast;
+		}
+		//计算搜索距离
+		rmar.caldist();
+		//计算阈值面积并设置
+		rmar.calarea();
+		//计算搜索的二值化阈值范围
+		calbrirange(rmar);
+		cout << "marker直径 " << rmar.size << " 个像素，平均亮度 " << mpix[0];
+		cout << " ,周围像素平均亮度 " << surpix[0] << endl;
+		//搜索n次并压入容器
+		rmar.detector = SimpleBlobDetector::create(rmar.params);
+		for (size_t i = 0; i < rmar.meanimgnum; i++)
+		{
+			rmar.detector->detect(frame, rmar.p2Dlast);
+			rmar.sortp();
+			rmar.p2Dtotal.push_back(rmar.p2Dlast);
+		}
+		//计算mean
+		rmar.calmean();
+		return true;
 	}
-	return true;
 }
 void Frame::calbrirange(Frame::marker & mar)
 {
@@ -152,38 +172,35 @@ void Frame::calbrirange(Frame::marker & mar)
 	//mar.params.maxThreshold = 185;
 	//mar.params.thresholdStep = 5;
 }
-int Frame::trackmarkers(marker& mar)
+bool Frame::trackmarkers(marker& mar)
 {
-	mar.caldist();
 	for (int i = 0; i < mar.p2Dlast.size(); i++) {
 		//定义搜索ROI
 		Rect box(mar.p2Dlast[i].pt.x - mar.distance / 2, mar.p2Dlast[i].pt.y - mar.distance / 2, mar.distance, mar.distance);
 		Mat roi = frame(box);
-		//多次识别ROI内的追踪点，放入暂存容器
-		for (size_t j = 0; j < 3; j++)
-		{
-			mar.detector->detect(roi, mar.p2Dtemp);
-			//成功识别一个追踪点
-			if (mar.p2Dtemp.size() == 1) {
-				//将追踪点坐标修改为全局坐标
-				mar.p2Dtemp[0].pt.x += box.x;
-				mar.p2Dtemp[0].pt.y += box.y;
-				//压入存储容器
-				mar.p2Dlast[i] = mar.p2Dtemp[0];
-				break;
-			}
-			//不能识别一个追踪点
-			else {
-				continue;
-			}
+		mar.detector = SimpleBlobDetector::create(mar.params);
+		//识别ROI内的追踪点，放入暂存容器
+		mar.detector->detect(roi, mar.p2Dtemp);
+		//成功识别一个追踪点
+		if (mar.p2Dtemp.size() == 1) {
+			//将追踪点坐标修改为全局坐标
+			mar.p2Dtemp[0].pt.x += box.x;
+			mar.p2Dtemp[0].pt.y += box.y;
+			//压入存储容器
+			mar.p2Dlast[i] = mar.p2Dtemp[0];
+			break;
+		}
+		//不能识别一个追踪点
+		else {
+			cout << "不能识别第 " << to_string(i + 1) << " 个追踪点，尝试全局搜索\n";
+			return false;
 		}
 	}
 	mar.caldist();
 	mar.calarea();
 	calbrirange(mar);
 	mar.calmean();
-	return 1;
-
+	return true;
 }
 int Frame::drawmarkers(marker mar) {
 	int m = 1;
@@ -205,32 +222,52 @@ bool Frame::capframe()
 	return 1;
 }
 
-bool Frame::globalsearch(marker& mar)
+bool Frame::globalsearch()
 {
 #ifdef webcam
 	int i = 0;
 	do {
 		capframe();
-		mar.detector->detect(frame, mar.p2Dlast);
+		rmar.detector->detect(frame, rmar.p2Dlast);
 
 		if (3 == i)
 		{
 			cout << "未能搜索到marker，重新初始化搜索参数\n";
-			inimarparam(mar);
+			inimarparam(rmar);
 			i = 0;
 			continue;
 		}
 		i++;
-	} while (mar.marnum != mar.p2Dlast.size() || !mar.iseqsize());
+	} while (rmar.marnum != rmar.p2Dlast.size() || !rmar.iseqsize());
 	cout << "全局搜索成功！\n";
 	return true;
 #else
-	mar.detector->detect(frame, mar.p2Dlast);
-	if (mar.marnum == mar.p2Dlast.size() && mar.iseqsize()) {
+	glmar.detector = SimpleBlobDetector::create(rmar.params);
+	glmar.detector->detect(frame, glmar.p2Dlast);
+	if (8 == glmar.p2Dlast.size()) {
+		glmar.sortp();		
+		seperatemar_p2Dlast();
+		rmar.caldist();
+		rmar.calarea();
+		calbrirange(rmar);
+		rmar.calmean();
 		cout << "全局搜索成功！\n";
 		return true;
 	}
-	else return false;
+	if (4 == glmar.p2Dlast.size() && glmar.iseqsize()) {
+		glmar.sortp();
+		rmar.p2Dlast = glmar.p2Dlast;
+		rmar.caldist();
+		rmar.calarea();
+		calbrirange(rmar);
+		rmar.calmean();
+		cout << "全局搜索成功！\n";
+		return true;
+	}
+	else {
+		cout << "全局搜索失败，搜索参数初始化并重新搜索\n";
+		return false;
+	}
 #endif // webcam
 
 	return true;
@@ -329,20 +366,29 @@ int Frame::ShowCamFrameToProjector()
 	}
 	return 1;
 }
-bool Frame::seperatemar()
+bool Frame::seperatemar_p2Dlast()
+{
+	if (refatleft)
+	{
+		rmar.p2Dlast.assign(glmar.p2Dlast.begin(), glmar.p2Dlast.begin() + 3);
+		hmar.p2Dlast.assign(glmar.p2Dlast.begin() + 4, glmar.p2Dlast.begin() + 7);
+	}
+	else {
+		hmar.p2Dlast.assign(glmar.p2Dlast.begin(), glmar.p2Dlast.begin() + 3);
+		rmar.p2Dlast.assign(glmar.p2Dlast.begin() + 4, glmar.p2Dlast.begin() + 7);
+	}
+	return true;
+}
+bool Frame::seperatemar_p2Dmean()
 {
 	if (refatleft)
 	{
 		rmar.p2Dmean.assign(glmar.p2Dmean.begin(), glmar.p2Dmean.begin() + 3);
-		rmar.p2Dtotal.assign(glmar.p2Dtotal.begin(), glmar.p2Dtotal.begin() + 3);
 		hmar.p2Dmean.assign(glmar.p2Dmean.begin() + 4, glmar.p2Dmean.begin() + 7);
-		hmar.p2Dtotal.assign(glmar.p2Dtotal.begin() + 4, glmar.p2Dtotal.begin() + 7);
 	}
 	else {
 		hmar.p2Dmean.assign(glmar.p2Dmean.begin(), glmar.p2Dmean.begin() + 3);
-		hmar.p2Dtotal.assign(glmar.p2Dtotal.begin(), glmar.p2Dtotal.begin() + 3);
 		rmar.p2Dmean.assign(glmar.p2Dmean.begin() + 4, glmar.p2Dmean.begin() + 7);
-		rmar.p2Dtotal.assign(glmar.p2Dtotal.begin() + 4, glmar.p2Dtotal.begin() + 7);
 	}
 	return true;
 }

@@ -35,7 +35,6 @@ private:
 		Mat tvec;
 		Mat rvec;
 		Affine3d pose;
-		bool clear();
 		bool sortp();
 		static bool compx(KeyPoint,KeyPoint);
 		static bool compy(KeyPoint,KeyPoint);
@@ -65,7 +64,7 @@ private:
 	double darkpix, bripix;
 	Scalar mpix, surpix;
 	int drawmarkers(marker mar);
-	int trackmarkers(marker& mar);
+	bool trackmarkers(marker& mar);
 	bool capframe();
 	void findpixrange();
 	void calbrirange(marker & mar);
@@ -80,13 +79,15 @@ public:
 	Affine3d headpose;
 	Affine3d refpose;
 	marker rmar, hmar, dmar, glmar;
+	bool registed = false;
 	// calculate camera pose and show navigation frame
 	bool Navigate(Mat projimg);
 	//show camera frame to projector for calibration
 	int ShowCamFrameToProjector();
-	bool inimarparam(marker& mar);
-	bool globalsearch(marker& mar);
-	bool seperatemar();
+	bool inimarparam();
+	bool globalsearch();
+	bool seperatemar_p2Dlast();
+	bool seperatemar_p2Dmean();
 };
 
 
