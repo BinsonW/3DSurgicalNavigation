@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <stdlib.h>
 #include <iostream>
 #include "Camera.h"
 #include "Frame.h"
@@ -17,38 +18,52 @@ int main() {
 		if (2 == frame.run()) continue;
 	}
 #else
+	Model3D model;
 	Camera cam("3240N_MatlabCalib.yml");
 	Frame frame(cam.getImageMemory(), cam.getcammat(), cam.getcamdiscoeff(), cam.getimgsize());
-	Model3D model;
+	//show img
+	while (1) {
+		cam.run();
+		frame.capframe();
+		if (!frame.ShowCamFrameToScreen()) break;
+	}
 	//regist
 	while (1) {
 		cam.run();
+		frame.capframe();
 		//check if has pose data
 		if (model.hasposedata) {
 			model.hasposedata = false;
 			frame.registed = true;
-			break;
+			if (frame.inimarparam()) {
+				break;
+			}
 		}		
 		//need to regist
 		if (frame.inimarparam()) {
 			model.regist(frame.headpose, frame.refpose);
 			cout << "患者位置注册成功！ 开始使用参考架导航！\n\n";
-			break;
+			//break;
 		}
+		//Sleep(3000);
 	}
 	//navigate
 	while (1) {
+		
 		cam.run();
+		frame.capframe();
 		model.run(frame.refpose);
 		if (!frame.Navigate(model.Projectwindow)) {
 			//局部搜索失败，全局搜索
 			cam.run();
+			frame.capframe();
 			if (!frame.globalsearch())
 			{
 				//全局搜索失败，初始化参数重新搜索
-				while (frame.inimarparam()) {
-					Sleep(3000);
+				while (!frame.inimarparam()) {
+					//Sleep(3000);
 					cam.run();
+					frame.capframe();
 				}
 			}
 		}

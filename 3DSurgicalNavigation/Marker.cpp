@@ -13,9 +13,9 @@ bool Frame::marker::sortp()
 	sort(p2Dlast.begin(), p2Dlast.end(), Frame::marker::compx);
 	//sort y
 	auto ptr = p2Dlast.begin();
-	while (p2Dlast.end() != (ptr + 1)) {
-		sort(ptr, ptr + 1, Frame::marker::compx);
-		ptr=ptr+2;
+	while (p2Dlast.end() - 1 != (ptr + 1)) {
+		sort(ptr, ptr + 2, Frame::marker::compy);
+		ptr = ptr + 2;
 	}
 	return true;
 }
@@ -64,15 +64,15 @@ bool Frame::marker::caldist()
 }
 bool Frame::marker::calarea()
 {
-	float area=0;
+	float area = 0;
 	size = 0;
 	for (KeyPoint i : p2Dlast) {
 		size += i.size;
 	}
 	size = size / marnum;
 	area = 3.1416*(size / 2)*(size / 2);
-	params.minArea = area * 0.6;
-	params.maxArea = area * 1.4;
+	params.minArea = area * 0.4;
+	params.maxArea = area * 1.6;
 	return true;
 }
 bool Frame::marker::calmean()
@@ -89,11 +89,13 @@ bool Frame::marker::calmean()
 		//第几个点
 		for (size_t i = 0; i < marnum; i++)
 		{
+			p2Dmean[i].pt.x = 0;
+			p2Dmean[i].pt.y = 0;
 			//第几张图
 			for (size_t j = 0; j < meanimgnum; j++)
 			{
-				p2Dmean[i].pt.x = +p2Dtotal[j][i].pt.x;
-				p2Dmean[i].pt.y = +p2Dtotal[j][i].pt.y;
+				p2Dmean[i].pt.x += p2Dtotal[j][i].pt.x;
+				p2Dmean[i].pt.y += p2Dtotal[j][i].pt.y;
 			}
 			p2Dmean[i].pt.x = p2Dmean[i].pt.x / meanimgnum;
 			p2Dmean[i].pt.y = p2Dmean[i].pt.y / meanimgnum;

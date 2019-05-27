@@ -43,21 +43,11 @@ private:
 		bool calmean();
 		bool iseqsize();
 	};
-	enum marposition {
-		LEFT,RIGHT,UP,DOWN,MID
-	};
-	class bad_glosearch:public runtime_error
-	{
-	public:
-		int marnum;
-		bad_glosearch(const int);
-		~bad_glosearch();
-	};
 	Rect projroi;
 	Size projsize;
 	bool refatleft = true;
 	//bool keepregister=true;
-	Mat frame,frame_clip,projimg_add,undistortmap1,undistortmap2,CameraMatrix,distCoefficients; 
+	Mat frame,camframe,frame_clip,projimg_add,undistortmap1,undistortmap2,CameraMatrix,distCoefficients; 
 	Size imgsize_Cam;
 	//webcam
 	VideoCapture cap;
@@ -65,13 +55,14 @@ private:
 	Scalar mpix, surpix;
 	int drawmarkers(marker mar);
 	bool trackmarkers(marker& mar);
-	bool capframe();
 	void findpixrange();
 	void calbrirange(marker & mar);
 	bool findmanytimes(marker& mar);
 	bool calbestbrirange(marker& mar);
 	bool calHRpose();
 	bool calRpose();
+	bool seperatemar_p2Dlast();
+	bool seperatemar_p2Dmean();
 public:
 	Frame(char* imagemem,const Mat cammat,const Mat camdiscoeff,const Size imgsize_cam);
 	Frame(VideoCapture);
@@ -84,10 +75,10 @@ public:
 	bool Navigate(Mat projimg);
 	//show camera frame to projector for calibration
 	int ShowCamFrameToProjector();
+	bool ShowCamFrameToScreen();
 	bool inimarparam();
 	bool globalsearch();
-	bool seperatemar_p2Dlast();
-	bool seperatemar_p2Dmean();
+	bool capframe();
 };
 
 

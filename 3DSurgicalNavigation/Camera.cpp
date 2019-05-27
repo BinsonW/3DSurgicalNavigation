@@ -71,7 +71,9 @@ int Camera::readcamparams(const String path)
 		cout << "Can't open camera intrinsic file!";
 	}
 	fs["camera_matrix"] >> cammat;
+	cammat.convertTo(cammat1, CV_64FC1);
 	fs["distortion_coefficients"] >> camdiscoeff;
+	camdiscoeff.convertTo(camdiscoeff, CV_64FC1);
 	fs["image_width"] >> imgsize.width;
 	fs["image_height"] >> imgsize.height;
 	return 1;

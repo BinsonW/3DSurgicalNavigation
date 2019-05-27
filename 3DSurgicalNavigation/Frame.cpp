@@ -3,14 +3,14 @@
 
 
 Frame::Frame(char * imagemem, const Mat cammat, const Mat camdiscoeff, const Size imgsize_cam) :
-	frame(1024, 1280, CV_8UC1, imagemem),
+	camframe(1024, 1280, CV_8UC1, imagemem),
 	//projector calibration 13th
 	projroi(0, 161, 1048, 802 - 161),
 	projsize(1048 + 95, 802 - 161)
 {
 	//define camera
 	CameraMatrix = cammat;
-	distCoefficients = camdiscoeff;
+	camdiscoeff;
 	imgsize_Cam = imgsize_cam;
 	//define windows
 	namedWindow("screen window", 0);
@@ -18,19 +18,20 @@ Frame::Frame(char * imagemem, const Mat cammat, const Mat camdiscoeff, const Siz
 	moveWindow("project window", 1400, 0);
 	setWindowProperty("project window", WND_PROP_FULLSCREEN, WINDOW_FULLSCREEN);
 	//undistort map
-	initUndistortRectifyMap(CameraMatrix, distCoefficients, noArray(), getOptimalNewCameraMatrix(CameraMatrix, distCoefficients, Size(1280, 1024), 1, Size(1280, 1024), 0), Size(1280, 1024), CV_16SC2, undistortmap1, undistortmap2);
+	//initUndistortRectifyMap(CameraMatrix, distCoefficients, noArray(), getOptimalNewCameraMatrix(CameraMatrix, distCoefficients, Size(1280, 1024), 1, Size(1280, 1024), 0), Size(1280, 1024), CV_16SC2, undistortmap1, undistortmap2);
 	//point_3D
-	rmar.p3D.push_back(Point3f(0.0f, 0.0f, 0));
-	rmar.p3D.push_back(Point3f(100, 0, 0));
 	rmar.p3D.push_back(Point3f(100, 100, 0));
+	rmar.p3D.push_back(Point3f(100, 0, 0));
 	rmar.p3D.push_back(Point3f(0, 100, 0));
+	rmar.p3D.push_back(Point3f(0.0f, 0.0f, 0));
 
-	hmar.p3D.push_back(Point3f(0.0, 0.0, 0.0));
-	hmar.p3D.push_back(Point3f(191, 0, 0.0));
-	hmar.p3D.push_back(Point3f(191, 141, 0.0));
-	hmar.p3D.push_back(Point3f(0.0, 141, 0.0));
+	hmar.p3D.push_back(Point3f(193, 142.5, 0.0));
+	hmar.p3D.push_back(Point3f(193, 8, 0.0));
+	hmar.p3D.push_back(Point3f(8, 142.5, 0.0));
+	hmar.p3D.push_back(Point3f(8, 7.5, 0.0));
 
-	glmar.marnum = 8;
+	glmar.color = Scalar(0, 255, 0);
+	rmar.color = Scalar(0, 255, 0);
 }
 Frame::Frame(VideoCapture capture) {
 	cap = capture;
@@ -62,7 +63,7 @@ void Frame::findpixrange()
 }
 bool Frame::inimarparam()
 {
-	imshow("screenwindow", frame);
+	imshow("screen window", frame);
 	waitKey(1);
 	//initiate frame
 	findpixrange();
@@ -70,12 +71,14 @@ bool Frame::inimarparam()
 	glmar.params.filterByColor = true;
 	glmar.params.blobColor = 255;
 	glmar.params.filterByArea = true;
-	glmar.params.filterByCircularity = true;
-	glmar.params.minCircularity = 0.6;
-	glmar.params.minInertiaRatio = 0.5;
-	glmar.params.minConvexity = 0.94;
+	glmar.params.filterByCircularity = false;
+	glmar.params.filterByInertia= false;
+	glmar.params.filterByConvexity= false;
+	glmar.params.minCircularity = 0.4;
+	glmar.params.minInertiaRatio = 0.4;
+	glmar.params.minConvexity = 0.9;
 	glmar.params.minRepeatability = 3;
-	glmar.color = Scalar(0, 255, 0);
+
 
 	glmar.params.minThreshold = bripix - glmar.threoffset - glmar.threrange;
 	glmar.params.maxThreshold = bripix - glmar.threoffset;
@@ -107,9 +110,11 @@ bool Frame::inimarparam()
 		}
 
 	}
+	rmar.params = glmar.params;
 	//unregisted
 	if (!registed) {
 		//搜索n次并压入容器
+		glmar.p2Dtotal.clear();
 		for (size_t i = 0; i < glmar.meanimgnum; i++)
 		{
 			glmar.p2Dtotal.push_back(glmar.p2Dlast);			
@@ -118,8 +123,17 @@ bool Frame::inimarparam()
 		}
 		//计算mean
 		glmar.calmean();
-		seperatemar_p2Dmean();
+		seperatemar_p2Dmean();		
 		calHRpose();
+		seperatemar_p2Dlast();
+		//计算搜索距离
+		rmar.caldist();
+		//计算阈值面积并设置
+		rmar.calarea();
+		//计算搜索的二值化阈值范围
+		calbrirange(rmar);
+		cout << "marker直径 " << rmar.size << " 个像素，平均亮度 " << mpix[0];
+		cout << " ,周围像素平均亮度 " << surpix[0] << endl;
 		return true;
 	}
 	//registed
@@ -142,9 +156,10 @@ bool Frame::inimarparam()
 		rmar.detector = SimpleBlobDetector::create(rmar.params);
 		for (size_t i = 0; i < rmar.meanimgnum; i++)
 		{
-			rmar.detector->detect(frame, rmar.p2Dlast);
-			rmar.sortp();
-			rmar.p2Dtotal.push_back(rmar.p2Dlast);
+			if (!trackmarkers(rmar)) {
+				cout << "局部搜索失败！\n" << endl;
+				return false;
+			}
 		}
 		//计算mean
 		rmar.calmean();
@@ -165,12 +180,9 @@ void Frame::calbrirange(Frame::marker & mar)
 	//计算最佳搜索亮度
 	//calbestbrirange(mar);
 	//设置搜索亮度范围
-	mar.params.minThreshold = (surpix[0] - mpix[0]) / 5 + mpix[0];
-	mar.params.maxThreshold = mar.params.minThreshold + (surpix[0] - mpix[0]) / 5;
-	mar.params.thresholdStep = (mar.params.maxThreshold - mar.params.minThreshold) / 5;
-	//mar.params.minThreshold = 175;
-	//mar.params.maxThreshold = 185;
-	//mar.params.thresholdStep = 5;
+	mar.params.minThreshold = (mpix[0]- surpix[0]) / 3 + surpix[0];
+	mar.params.maxThreshold = mar.params.minThreshold + (mpix[0] - surpix[0]) / 3;
+	mar.params.thresholdStep = (mar.params.maxThreshold - mar.params.minThreshold) / 3;
 }
 bool Frame::trackmarkers(marker& mar)
 {
@@ -188,7 +200,6 @@ bool Frame::trackmarkers(marker& mar)
 			mar.p2Dtemp[0].pt.y += box.y;
 			//压入存储容器
 			mar.p2Dlast[i] = mar.p2Dtemp[0];
-			break;
 		}
 		//不能识别一个追踪点
 		else {
@@ -217,7 +228,7 @@ bool Frame::capframe()
 	cap >> frame;
 	cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
 #else
-
+	camframe.copyTo(frame);
 #endif // webcam
 	return 1;
 }
@@ -312,8 +323,8 @@ bool Frame::calHRpose()
 {
 	KeyPoint::convert(hmar.p2Dmean, hmar.p2Dm_P2f);
 	KeyPoint::convert(rmar.p2Dmean, rmar.p2Dm_P2f);
-	solvePnPRansac(hmar.p3D, hmar.p2Dm_P2f, CameraMatrix, distCoefficients, hmar.rvec, hmar.tvec, !hmar.tvec.empty());
-	solvePnPRansac(rmar.p3D, rmar.p2Dm_P2f, CameraMatrix, distCoefficients, rmar.rvec, rmar.tvec, !rmar.tvec.empty());
+	solvePnP(hmar.p3D, hmar.p2Dm_P2f, CameraMatrix, distCoefficients, hmar.rvec, hmar.tvec/*, !hmar.tvec.empty()*/);
+	solvePnP(rmar.p3D, rmar.p2Dm_P2f, CameraMatrix, distCoefficients, rmar.rvec, rmar.tvec/*, !rmar.tvec.empty()*/);
 	Affine3d h((Vec3d)hmar.rvec, (Vec3d)hmar.tvec);
 	Affine3d r((Vec3d)rmar.rvec, (Vec3d)rmar.tvec);
 	headpose = h;
@@ -323,7 +334,8 @@ bool Frame::calHRpose()
 bool Frame::calRpose()
 {
 	KeyPoint::convert(rmar.p2Dmean, rmar.p2Dm_P2f);
-	solvePnP(rmar.p3D, rmar.p2Dm_P2f, CameraMatrix, distCoefficients, rmar.rvec, rmar.tvec, !rmar.tvec.empty(), cv::SOLVEPNP_P3P);
+	solvePnP(rmar.p3D, rmar.p2Dm_P2f, CameraMatrix, distCoefficients, rmar.rvec, rmar.tvec, !rmar.tvec.empty());
+	cout << rmar.tvec;
 	Affine3d r((Vec3d)rmar.rvec, (Vec3d)rmar.tvec);
 	refpose = r;
 	return true;
@@ -351,6 +363,7 @@ bool Frame::Navigate(Mat projimg)
 	imshow("screen window", frame);
 	imshow("project window", projimg);
 	int c = waitKey(1);
+	cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
 	return true;
 }
 int Frame::ShowCamFrameToProjector()
@@ -366,16 +379,23 @@ int Frame::ShowCamFrameToProjector()
 	}
 	return 1;
 }
+bool Frame::ShowCamFrameToScreen()
+{
+	imshow("screen window", frame);
+	char c = static_cast<char>(waitKey(1));
+	if(c!=32)	return true;
+	else return false;
+}
 bool Frame::seperatemar_p2Dlast()
 {
 	if (refatleft)
 	{
-		rmar.p2Dlast.assign(glmar.p2Dlast.begin(), glmar.p2Dlast.begin() + 3);
-		hmar.p2Dlast.assign(glmar.p2Dlast.begin() + 4, glmar.p2Dlast.begin() + 7);
+		hmar.p2Dlast.assign(glmar.p2Dlast.begin(), glmar.p2Dlast.begin() + 4);
+		rmar.p2Dlast.assign(glmar.p2Dlast.begin() + 4, glmar.p2Dlast.begin() + 8);
 	}
 	else {
-		hmar.p2Dlast.assign(glmar.p2Dlast.begin(), glmar.p2Dlast.begin() + 3);
-		rmar.p2Dlast.assign(glmar.p2Dlast.begin() + 4, glmar.p2Dlast.begin() + 7);
+		rmar.p2Dlast.assign(glmar.p2Dlast.begin(), glmar.p2Dlast.begin() + 4);
+		hmar.p2Dlast.assign(glmar.p2Dlast.begin() + 4, glmar.p2Dlast.begin() + 8);
 	}
 	return true;
 }
@@ -383,12 +403,12 @@ bool Frame::seperatemar_p2Dmean()
 {
 	if (refatleft)
 	{
-		rmar.p2Dmean.assign(glmar.p2Dmean.begin(), glmar.p2Dmean.begin() + 3);
-		hmar.p2Dmean.assign(glmar.p2Dmean.begin() + 4, glmar.p2Dmean.begin() + 7);
+		hmar.p2Dmean.assign(glmar.p2Dmean.begin(), glmar.p2Dmean.begin() + 4);
+		rmar.p2Dmean.assign(glmar.p2Dmean.begin() + 4, glmar.p2Dmean.begin() + 8);
 	}
 	else {
-		hmar.p2Dmean.assign(glmar.p2Dmean.begin(), glmar.p2Dmean.begin() + 3);
-		rmar.p2Dmean.assign(glmar.p2Dmean.begin() + 4, glmar.p2Dmean.begin() + 7);
+		rmar.p2Dmean.assign(glmar.p2Dmean.begin(), glmar.p2Dmean.begin() + 4);
+		hmar.p2Dmean.assign(glmar.p2Dmean.begin() + 4, glmar.p2Dmean.begin() + 8);
 	}
 	return true;
 }

@@ -17,7 +17,7 @@ private:
 	double setAutoGain2 = 1;	
 	double ExposureTime_min;
 	double ExposureTime_max;
-	Mat cammat;
+	Mat cammat,cammat1;
 	Mat camdiscoeff;
 	Size imgsize;
 public:
