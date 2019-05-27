@@ -15,7 +15,7 @@ private:
 		marker();
 		~marker();
 		int marnum = 4;
-		const int meanimgnum=3;
+		const int meanimgnum=5;
 		float distance=1000;
 		float size = 0;
 		Scalar color;

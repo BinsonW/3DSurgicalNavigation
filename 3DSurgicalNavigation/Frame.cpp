@@ -10,7 +10,7 @@ Frame::Frame(char * imagemem, const Mat cammat, const Mat camdiscoeff, const Siz
 {
 	//define camera
 	CameraMatrix = cammat;
-	camdiscoeff;
+	distCoefficients=camdiscoeff;
 	imgsize_Cam = imgsize_cam;
 	//define windows
 	namedWindow("screen window", 0);
@@ -20,7 +20,8 @@ Frame::Frame(char * imagemem, const Mat cammat, const Mat camdiscoeff, const Siz
 	//undistort map
 	//initUndistortRectifyMap(CameraMatrix, distCoefficients, noArray(), getOptimalNewCameraMatrix(CameraMatrix, distCoefficients, Size(1280, 1024), 1, Size(1280, 1024), 0), Size(1280, 1024), CV_16SC2, undistortmap1, undistortmap2);
 	//point_3D
-	rmar.p3D.push_back(Point3f(100, 100, 0));
+	//rmar.p3D.push_back(Point3f(100, 100, 0));
+	rmar.p3D.push_back(Point3f(125, 125, 0));
 	rmar.p3D.push_back(Point3f(100, 0, 0));
 	rmar.p3D.push_back(Point3f(0, 100, 0));
 	rmar.p3D.push_back(Point3f(0.0f, 0.0f, 0));
@@ -323,6 +324,7 @@ bool Frame::calHRpose()
 {
 	KeyPoint::convert(hmar.p2Dmean, hmar.p2Dm_P2f);
 	KeyPoint::convert(rmar.p2Dmean, rmar.p2Dm_P2f);
+	//cout << CameraMatrix << distCoefficients;
 	solvePnP(hmar.p3D, hmar.p2Dm_P2f, CameraMatrix, distCoefficients, hmar.rvec, hmar.tvec/*, !hmar.tvec.empty()*/);
 	solvePnP(rmar.p3D, rmar.p2Dm_P2f, CameraMatrix, distCoefficients, rmar.rvec, rmar.tvec/*, !rmar.tvec.empty()*/);
 	Affine3d h((Vec3d)hmar.rvec, (Vec3d)hmar.tvec);

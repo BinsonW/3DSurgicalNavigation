@@ -74,6 +74,7 @@ int Camera::readcamparams(const String path)
 	cammat.convertTo(cammat1, CV_64FC1);
 	fs["distortion_coefficients"] >> camdiscoeff;
 	camdiscoeff.convertTo(camdiscoeff, CV_64FC1);
+	//cout<<camdiscoeff;
 	fs["image_width"] >> imgsize.width;
 	fs["image_height"] >> imgsize.height;
 	return 1;

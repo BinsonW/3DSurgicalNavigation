@@ -17,6 +17,7 @@ bool Frame::marker::sortp()
 		sort(ptr, ptr + 2, Frame::marker::compy);
 		ptr = ptr + 2;
 	}
+	sort(ptr, ptr + 2, Frame::marker::compy);
 	return true;
 }
 bool Frame::marker::compx(KeyPoint i, KeyPoint j)
