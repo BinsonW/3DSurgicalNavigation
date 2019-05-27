@@ -7,7 +7,7 @@
 Model3D::Model3D() :
 	tumor(viz::readCloud("E:\\wubxprogram\\Debug\\Skull.stl"), viz::Color::green()),
 	ProjectWindow("3D Project Window"),
-	ProjectCamera(2.4188753857320721e+03*0.724609375, 2.4188753857320721e+03*0.724609375, 5.7164331421986378e+02*0.724609375, 5.5079334958877484e+02*0.724609375, Size(928, 742)),
+	ProjectCamera(2.419128343195550e+03*0.724609375, 2.418354228183528e+03*0.724609375, 5.764543077579378e+02*0.724609375, 5.526957147621707e+02*0.724609375, Size(928, 742)),
 	cylinder(Point3d(95, 70, 0), Point3d(95, 70, 100), 10, 30, viz::Color::green()),
 	sphere(Point3d(95.5, 57.4, -141.91), 25, 50, viz::Color::green()),
 	circlegrid3D(circlegrid,Size(240,240),Vec3d(95.5,90.5,0),Vec3d(0,0,1),Vec3d(0,-1,0))

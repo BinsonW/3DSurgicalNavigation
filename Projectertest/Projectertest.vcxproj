@@ -23,7 +23,7 @@
     <ProjectGuid>{B6F1A3EE-3BB6-48FD-811D-8F506E4E2F4A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Projectertest</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
     <ProjectName>ProjecterTest</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
