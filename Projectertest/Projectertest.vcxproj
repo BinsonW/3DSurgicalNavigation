@@ -73,7 +73,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files (x86)\VTK\include\vtk-7.1;E:\ThorlabsScientificImagingSoftware;E:\opencv\opencv341\install\include;$(IncludePath);$(SolutionDir)\3DSurgicalNavigation</IncludePath>
+    <IncludePath>E:\3DSurgicalNavigation\3DSurgicalNavigation;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -160,6 +160,7 @@
   <ItemGroup>
     <ClCompile Include="..\3DSurgicalNavigation\Camera.cpp" />
     <ClCompile Include="..\3DSurgicalNavigation\Frame.cpp" />
+    <ClCompile Include="..\3DSurgicalNavigation\marker.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

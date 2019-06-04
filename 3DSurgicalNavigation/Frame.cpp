@@ -5,8 +5,8 @@
 Frame::Frame(char * imagemem, const Mat cammat, const Mat camdiscoeff, const Size imgsize_cam) :
 	camframe(1024, 1280, CV_8UC1, imagemem),
 	//projector calibration 13th
-	projroi(0, 161, 1048, 802 - 161),
-	projsize(1048 + 95, 802 - 161)
+	projroi(0, 160, 1048, 801 - 160),
+	projsize(1048 + 95, 801 - 160)
 {
 	//define camera
 	CameraMatrix = cammat;
@@ -190,6 +190,10 @@ bool Frame::trackmarkers(marker& mar)
 	for (int i = 0; i < mar.p2Dlast.size(); i++) {
 		//定义搜索ROI
 		Rect box(mar.p2Dlast[i].pt.x - mar.distance / 2, mar.p2Dlast[i].pt.y - mar.distance / 2, mar.distance, mar.distance);
+		if (box.x <= 0 || box.y <= 0 || (box.x + box.width) > imgsize_Cam.width || (box.y + box.height) > imgsize_Cam.height) {
+			cout << "超出边界，全局搜索！\n";
+			return false;
+		}
 		Mat roi = frame(box);
 		mar.detector = SimpleBlobDetector::create(mar.params);
 		//识别ROI内的追踪点，放入暂存容器
@@ -337,7 +341,7 @@ bool Frame::calRpose()
 {
 	KeyPoint::convert(rmar.p2Dmean, rmar.p2Dm_P2f);
 	solvePnP(rmar.p3D, rmar.p2Dm_P2f, CameraMatrix, distCoefficients, rmar.rvec, rmar.tvec, !rmar.tvec.empty());
-	cout << rmar.tvec;
+	//cout << rmar.tvec;
 	Affine3d r((Vec3d)rmar.rvec, (Vec3d)rmar.tvec);
 	refpose = r;
 	return true;
@@ -354,13 +358,13 @@ bool Frame::Navigate(Mat projimg)
 
 	//construct projact frame
 	frame_clip = frame(projroi);
-	projimg = projimg(Range(117, 581), Range(0, 759));
+	projimg = projimg(Range(116, 580), Range(0, 760));
 	projimg.copyTo(projimg_add);
 	resize(projimg_add, projimg_add, Size(1048, 641));
 	//projframe = Mat(bottomedge - topedge, rightedge, CV_8UC3, Scalar(0, 0, 0));
 	frame_clip += projimg_add;
 	flip(projimg, projimg, 1);
-	copyMakeBorder(projimg, projimg, 0, 0, 0, 69, BORDER_ISOLATED, Scalar::all(0));
+	copyMakeBorder(projimg, projimg, 0, 0, 0, 68, BORDER_ISOLATED, Scalar::all(0));
 	rectangle(frame, projroi, Scalar(0, 255, 0));
 	imshow("screen window", frame);
 	imshow("project window", projimg);
@@ -370,9 +374,18 @@ bool Frame::Navigate(Mat projimg)
 }
 int Frame::ShowCamFrameToProjector()
 {
-	flip(frame, frame, 1);
-	copyMakeBorder(frame, frame, 0, 0, 0, projsize.width - projroi.width, BORDER_ISOLATED, Scalar::all(0));
-	cv::imshow("project window", frame);
+	frame.copyTo(frame_clip);
+	frame_clip = frame_clip(projroi);
+
+	//resize(frame_clip, frame_clip, Size(759, 464));
+
+	flip(frame_clip, frame_clip, 1);
+	//copyMakeBorder(frame_clip, frame_clip, 0, 0, 0,69, BORDER_ISOLATED, Scalar::all(0));
+	copyMakeBorder(frame_clip, frame_clip, 0, 0, 0, projsize.width - projroi.width, BORDER_ISOLATED, Scalar::all(0));
+	cvtColor(frame, frame, cv::COLOR_GRAY2BGR);
+	rectangle(frame, projroi, Scalar(0, 255, 0),5);
+	imshow("screen window", frame);
+	imshow("project window", frame_clip);
 	char c = (char)waitKey(1);
 	switch (c) {
 	case 32:

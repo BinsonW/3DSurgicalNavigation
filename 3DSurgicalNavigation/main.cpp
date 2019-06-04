@@ -42,8 +42,9 @@ int main() {
 		//need to regist
 		if (frame.inimarparam()) {
 			model.regist(frame.headpose, frame.refpose);
+			frame.registed = true;
 			cout << "患者位置注册成功！ 开始使用参考架导航！\n\n";
-			//break;
+			break;
 		}
 		//Sleep(3000);
 	}

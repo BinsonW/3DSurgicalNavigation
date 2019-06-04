@@ -52,15 +52,17 @@ bool Frame::marker::iseqsize()
 }
 bool Frame::marker::caldist()
 {
-	float t;
+	float t=0,dt=0;
 	//calculate min distance
 	for (int i = 0; i < p2Dlast.size(); i++) {
 		for (int j = i + 1; j < p2Dlast.size(); j++) {
+			dt = t;
 			t = fabs(p2Dlast[i].pt.x - p2Dlast[j].pt.x) + fabs(p2Dlast[i].pt.y - p2Dlast[j].pt.y);
-			distance = distance < t ? distance : t;
+			if (dt == 0) dt = t;
+			dt = dt < t ? dt : t;
 		}
 	}
-	//distance = distance * 0.8;
+	distance = dt*0.5;
 	return true;
 }
 bool Frame::marker::calarea()
@@ -72,8 +74,8 @@ bool Frame::marker::calarea()
 	}
 	size = size / marnum;
 	area = 3.1416*(size / 2)*(size / 2);
-	params.minArea = area * 0.4;
-	params.maxArea = area * 1.6;
+	params.minArea = area * 0.5;
+	params.maxArea = area * 4;
 	return true;
 }
 bool Frame::marker::calmean()
@@ -105,6 +107,6 @@ bool Frame::marker::calmean()
 	else {
 		p2Dtotal.push_back(p2Dlast);
 	}
-	cout << p2Dtotal.size();
+	//cout << p2Dtotal.size();
 	return 1;
 }

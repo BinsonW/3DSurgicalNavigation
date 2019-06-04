@@ -10,7 +10,7 @@ Model3D::Model3D() :
 	ProjectCamera(2.419128343195550e+03*0.724609375, 2.418354228183528e+03*0.724609375, 5.764543077579378e+02*0.724609375, 5.526957147621707e+02*0.724609375, Size(928, 742)),
 	cylinder(Point3d(95, 70, 0), Point3d(95, 70, 100), 10, 30, viz::Color::green()),
 	sphere(Point3d(95.5, 57.4, -141.91), 25, 50, viz::Color::green()),
-	circlegrid3D(circlegrid,Size(240,240),Vec3d(95.5,90.5,0),Vec3d(0,0,1),Vec3d(0,-1,0))
+	circlegrid3D(circlegrid,Size(240,240),Vec3d(100,95,0),Vec3d(0,0,-1),Vec3d(0,-1,0))
 {
 	//initiate 3D project window
 	ProjectWindow.showWidget("ptumor", circlegrid3D);
@@ -55,11 +55,12 @@ int Model3D::run(Affine3d campose)
 int Model3D::regist(Affine3d & scalpose, Affine3d & refpose)
 {
 	pose = refpose.inv()*scalpose;
+	cout << "注册位置 "<<pose.translation()<<endl;
 	ProjectWindow.setWidgetPose("ptumor", pose);
 	//save pose data
-	//widgetposeout.open("widgetpose.dat", ios_base::out | ios_base::binary);
-	//widgetposeout.write((char *)&pose, sizeof pose);
-	//widgetposeout << flush;
-	//cout << "已成功存储位置数据！\n\n";
+	widgetposeout.open("widgetpose.dat", ios_base::out | ios_base::binary);
+	widgetposeout.write((char *)&pose, sizeof pose);
+	widgetposeout << flush;
+	cout << "已成功存储位置数据！\n\n";
 	return 1;
 }
