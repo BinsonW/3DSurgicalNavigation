@@ -218,6 +218,27 @@ bool Frame::trackmarkers(marker& mar)
 	mar.calmean();
 	return true;
 }
+void Frame::moveframe(Mat& projimg)
+{
+	//hori>0,move to right;vert>0,move to down side
+	//down
+	if (vert > 0) {
+		projimg = projimg(Rect(vert + 1, projimg.rows, 1, projimg.cols));
+		copyMakeBorder(projimg, projimg, 0, vert, 0, 0, BORDER_ISOLATED, Scalar::all(0));
+	}
+	if (vert < 0) {
+		projimg = projimg(Rect(1, projimg.rows+vert, 1, projimg.cols));
+		copyMakeBorder(projimg, projimg, vert, 0, 0, 0, BORDER_ISOLATED, Scalar::all(0));
+	}
+	if (hori > 0) {
+		projimg = projimg(Rect(1, projimg.rows, hori+1, projimg.cols));
+		copyMakeBorder(projimg, projimg, 0, 0, 0, hori, BORDER_ISOLATED, Scalar::all(0));
+	}
+	if (hori < 0) {
+		projimg = projimg(Rect(1, projimg.rows, 1, projimg.cols+hori));
+		copyMakeBorder(projimg, projimg, 0, 0, 0, hori, BORDER_ISOLATED, Scalar::all(0));
+	}
+}
 int Frame::drawmarkers(marker mar) {
 	int m = 1;
 	for (KeyPoint i : mar.p2Dlast) {
@@ -366,9 +387,31 @@ bool Frame::Navigate(Mat projimg)
 	flip(projimg, projimg, 1);
 	copyMakeBorder(projimg, projimg, 0, 0, 0, 68, BORDER_ISOLATED, Scalar::all(0));
 	rectangle(frame, projroi, Scalar(0, 255, 0));
+	moveframe(projimg);
 	imshow("screen window", frame);
 	imshow("project window", projimg);
 	int c = waitKey(1);
+	switch (c)
+	{
+	case 'w':
+		vert--;
+		cout << "up 1 pix\n";
+		break;
+	case 'a':
+		hori--;
+		cout << "left 1 pix\n";
+		break;
+	case 's':
+		vert++;
+		cout << "down 1 pix\n";
+		break;
+	case 'd':
+		hori++;
+		cout << "right 1 pix\n";
+		break;
+	default:
+		break;
+	}
 	cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
 	return true;
 }

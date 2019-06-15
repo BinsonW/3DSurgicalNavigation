@@ -53,8 +53,10 @@ private:
 	VideoCapture cap;
 	double darkpix, bripix;
 	Scalar mpix, surpix;
+	int hori=0, vert=0;
 	int drawmarkers(marker mar);
 	bool trackmarkers(marker& mar);
+	void moveframe(Mat& projimg);
 	void findpixrange();
 	void calbrirange(marker & mar);
 	bool findmanytimes(marker& mar);
