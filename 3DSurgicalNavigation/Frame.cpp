@@ -22,8 +22,8 @@ Frame::Frame(char * imagemem, const Mat cammat, const Mat camdiscoeff, const Siz
 	//point_3D
 	//rmar.p3D.push_back(Point3f(100, 100, 0));
 	rmar.p3D.push_back(Point3f(125, 125, 0));
-	rmar.p3D.push_back(Point3f(100, 0, 0));
-	rmar.p3D.push_back(Point3f(0, 100, 0));
+	rmar.p3D.push_back(Point3f(125, 0, 0));
+	rmar.p3D.push_back(Point3f(0, 125, 0));
 	rmar.p3D.push_back(Point3f(0.0f, 0.0f, 0));
 
 	hmar.p3D.push_back(Point3f(193, 142.5, 0.0));
@@ -223,20 +223,20 @@ void Frame::moveframe(Mat& projimg)
 	//hori>0,move to right;vert>0,move to down side
 	//down
 	if (vert > 0) {
-		projimg = projimg(Rect(vert + 1, projimg.rows, 1, projimg.cols));
+		projimg = projimg(Range(vert, projimg.rows), Range(0, projimg.cols));
 		copyMakeBorder(projimg, projimg, 0, vert, 0, 0, BORDER_ISOLATED, Scalar::all(0));
 	}
 	if (vert < 0) {
-		projimg = projimg(Rect(1, projimg.rows+vert, 1, projimg.cols));
-		copyMakeBorder(projimg, projimg, vert, 0, 0, 0, BORDER_ISOLATED, Scalar::all(0));
+		projimg = projimg(Range(0, projimg.rows+vert), Range(0, projimg.cols));
+		copyMakeBorder(projimg, projimg, -(vert), 0, 0, 0, BORDER_ISOLATED, Scalar::all(0));
 	}
 	if (hori > 0) {
-		projimg = projimg(Rect(1, projimg.rows, hori+1, projimg.cols));
+		projimg = projimg(Range(0, projimg.rows), Range(hori, projimg.cols));
 		copyMakeBorder(projimg, projimg, 0, 0, 0, hori, BORDER_ISOLATED, Scalar::all(0));
 	}
 	if (hori < 0) {
-		projimg = projimg(Rect(1, projimg.rows, 1, projimg.cols+hori));
-		copyMakeBorder(projimg, projimg, 0, 0, 0, hori, BORDER_ISOLATED, Scalar::all(0));
+		projimg = projimg(Range(0, projimg.rows), Range(0, projimg.cols+hori));
+		copyMakeBorder(projimg, projimg, 0, 0, -(hori), 0, BORDER_ISOLATED, Scalar::all(0));
 	}
 }
 int Frame::drawmarkers(marker mar) {
@@ -385,9 +385,9 @@ bool Frame::Navigate(Mat projimg)
 	//projframe = Mat(bottomedge - topedge, rightedge, CV_8UC3, Scalar(0, 0, 0));
 	frame_clip += projimg_add;
 	flip(projimg, projimg, 1);
+	moveframe(projimg);
 	copyMakeBorder(projimg, projimg, 0, 0, 0, 68, BORDER_ISOLATED, Scalar::all(0));
 	rectangle(frame, projroi, Scalar(0, 255, 0));
-	moveframe(projimg);
 	imshow("screen window", frame);
 	imshow("project window", projimg);
 	int c = waitKey(1);
