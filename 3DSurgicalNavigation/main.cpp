@@ -49,8 +49,7 @@ int main() {
 		//Sleep(3000);
 	}
 	//navigate
-	while (1) {
-		
+	while (1) {		
 		cam.run();
 		frame.capframe();
 		model.run(frame.refpose);

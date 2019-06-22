@@ -24,12 +24,33 @@ Frame::Frame(char * imagemem, const Mat cammat, const Mat camdiscoeff, const Siz
 	rmar.p3D.push_back(Point3f(125, 125, 0));
 	rmar.p3D.push_back(Point3f(125, 0, 0));
 	rmar.p3D.push_back(Point3f(0, 125, 0));
-	rmar.p3D.push_back(Point3f(0.0f, 0.0f, 0));
+	rmar.p3D.push_back(Point3f(0, 25, 0));
 
-	hmar.p3D.push_back(Point3f(193, 142.5, 0.0));
-	hmar.p3D.push_back(Point3f(193, 8, 0.0));
-	hmar.p3D.push_back(Point3f(8, 142.5, 0.0));
-	hmar.p3D.push_back(Point3f(8, 7.5, 0.0));
+	//Calibration board
+	//hmar.p3D.push_back(Point3f(193, 142.5, 0.0));
+	//hmar.p3D.push_back(Point3f(193, 8, 0.0));
+	//hmar.p3D.push_back(Point3f(8, 142.5, 0.0));
+	//hmar.p3D.push_back(Point3f(8, 7.5, 0.0));
+
+	//Calibration board translate
+	//hmar.p3D.push_back(Point3f(193, 142.5, -184));
+	//hmar.p3D.push_back(Point3f(193, 8, -184));
+	//hmar.p3D.push_back(Point3f(8, 142.5, -184));
+	//hmar.p3D.push_back(Point3f(8, 7.5, -184));
+
+	////Phantom
+	hmar.p3D.push_back(Point3f(-30.4300, -27.7672, -1.6042));
+	hmar.p3D.push_back(Point3f(-36.7909, 36.8750, -4.5509));
+	hmar.p3D.push_back(Point3f(33.6753, -30.5107, 0.6414));
+	hmar.p3D.push_back(Point3f(32.2384, 40.1942, -5.7228));
+
+	//Phantom translate
+	//hmar.p3D.push_back(Point3f(-59.4855, -76.4799, 34.5232));
+	//hmar.p3D.push_back(Point3f(-64.3759, -11.7098, 37.4699));
+	//hmar.p3D.push_back(Point3f(4.5409, -80.6794, 32.2777));
+	//hmar.p3D.push_back(Point3f(4.7110, -9.9601, 38.6419));
+
+
 
 	glmar.color = Scalar(0, 255, 0);
 	rmar.color = Scalar(0, 255, 0);
@@ -350,8 +371,8 @@ bool Frame::calHRpose()
 	KeyPoint::convert(hmar.p2Dmean, hmar.p2Dm_P2f);
 	KeyPoint::convert(rmar.p2Dmean, rmar.p2Dm_P2f);
 	//cout << CameraMatrix << distCoefficients;
-	solvePnP(hmar.p3D, hmar.p2Dm_P2f, CameraMatrix, distCoefficients, hmar.rvec, hmar.tvec/*, !hmar.tvec.empty()*/);
-	solvePnP(rmar.p3D, rmar.p2Dm_P2f, CameraMatrix, distCoefficients, rmar.rvec, rmar.tvec/*, !rmar.tvec.empty()*/);
+	solvePnP(hmar.p3D, hmar.p2Dm_P2f, CameraMatrix, distCoefficients, hmar.rvec, hmar.tvec,0, SOLVEPNP_P3P);
+	solvePnP(rmar.p3D, rmar.p2Dm_P2f, CameraMatrix, distCoefficients, rmar.rvec, rmar.tvec);
 	Affine3d h((Vec3d)hmar.rvec, (Vec3d)hmar.tvec);
 	Affine3d r((Vec3d)rmar.rvec, (Vec3d)rmar.tvec);
 	headpose = h;
