@@ -14,10 +14,11 @@ Model3D::Model3D() :
 {
 	//initiate 3D project window
 	ProjectWindow.showWidget("ptumor", tumor);
+	//ProjectWindow.showWidget("ptumor", circlegrid3D);
 	ProjectWindow.spinOnce(1, true);
 	ProjectWindow.setCamera(ProjectCamera);
 
-	viz::WCoordinateSystem a(100);
+	viz::WCoordinateSystem a(10);
 	//ProjectWindow.showWidget("cor", a);
 	//ProjectWindow.setRenderingProperty("ptumor", viz::POINT_SIZE, 1.3);
 	ProjectWindow.setBackgroundColor();
@@ -61,10 +62,10 @@ int Model3D::regist(Affine3d & scalpose, Affine3d & refpose)
 	ProjectWindow.setWidgetPose("ptumor", p);
 	//ProjectWindow.setWidgetPose("cor", p);
 	//save pose data
-	//widgetposeout.open("widgetpose.dat", ios_base::out | ios_base::binary);
-	//widgetposeout.write((char *)&pose, sizeof pose);
-	//widgetposeout << flush;
-	//cout << "已成功存储位置数据！\n\n";
+	widgetposeout.open("widgetpose.dat", ios_base::out | ios_base::binary);
+	widgetposeout.write((char *)&pose, sizeof pose);
+	widgetposeout << flush;
+	cout << "已成功存储位置数据！\n\n";
 
 	return 1;
 }

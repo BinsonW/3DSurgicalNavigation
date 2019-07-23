@@ -77,6 +77,7 @@ public:
 	bool Navigate(Mat projimg);
 	//show camera frame to projector for calibration
 	int ShowCamFrameToProjector();
+	bool Showgreen();
 	bool ShowCamFrameToScreen();
 	bool inimarparam();
 	bool globalsearch();

@@ -46,7 +46,6 @@ int main() {
 			cout << "患者位置注册成功！ 开始使用参考架导航！\n\n";
 			break;
 		}
-		//Sleep(3000);
 	}
 	//navigate
 	while (1) {		

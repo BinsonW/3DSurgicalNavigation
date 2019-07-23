@@ -44,14 +44,6 @@ Frame::Frame(char * imagemem, const Mat cammat, const Mat camdiscoeff, const Siz
 	hmar.p3D.push_back(Point3f(33.6753, -30.5107, 0.6414));
 	hmar.p3D.push_back(Point3f(32.2384, 40.1942, -5.7228));
 
-	//Phantom translate
-	//hmar.p3D.push_back(Point3f(-59.4855, -76.4799, 34.5232));
-	//hmar.p3D.push_back(Point3f(-64.3759, -11.7098, 37.4699));
-	//hmar.p3D.push_back(Point3f(4.5409, -80.6794, 32.2777));
-	//hmar.p3D.push_back(Point3f(4.7110, -9.9601, 38.6419));
-
-
-
 	glmar.color = Scalar(0, 255, 0);
 	rmar.color = Scalar(0, 255, 0);
 }
@@ -371,7 +363,7 @@ bool Frame::calHRpose()
 	KeyPoint::convert(hmar.p2Dmean, hmar.p2Dm_P2f);
 	KeyPoint::convert(rmar.p2Dmean, rmar.p2Dm_P2f);
 	//cout << CameraMatrix << distCoefficients;
-	solvePnP(hmar.p3D, hmar.p2Dm_P2f, CameraMatrix, distCoefficients, hmar.rvec, hmar.tvec,0, SOLVEPNP_P3P);
+	solvePnP(hmar.p3D, hmar.p2Dm_P2f, CameraMatrix, distCoefficients, hmar.rvec, hmar.tvec/*,0, SOLVEPNP_P3P*/);
 	solvePnP(rmar.p3D, rmar.p2Dm_P2f, CameraMatrix, distCoefficients, rmar.rvec, rmar.tvec);
 	Affine3d h((Vec3d)hmar.rvec, (Vec3d)hmar.tvec);
 	Affine3d r((Vec3d)rmar.rvec, (Vec3d)rmar.tvec);
@@ -456,6 +448,12 @@ int Frame::ShowCamFrameToProjector()
 		waitKey(0);
 		break;
 	}
+	return 1;
+}
+bool Frame::Showgreen() {
+	Mat a (Size(1000, 1000), CV_8UC3, Scalar(255, 255, 255));
+	imshow("Projector window", a);
+	waitKey(0);
 	return 1;
 }
 bool Frame::ShowCamFrameToScreen()
