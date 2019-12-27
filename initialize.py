@@ -1,0 +1,1 @@
+# Initialize camera projector parameters and marker 2d 3d coordinates
