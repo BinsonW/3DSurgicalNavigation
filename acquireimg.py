@@ -12,12 +12,12 @@ class acquireimg(QtCore.QObject):
         self.cap = cv2.VideoCapture(0)
         if not self.cap.isOpened():
             print("Cannot open camera")
-            exit()        
+            exit()      
         self.i=0
     def run(self):
         #ptvsd.debug_this_thread()
         gl._semacq(0)
-        ret,gl.frame[self.i]=self.cap.read()
+        ret, gl.frame[self.i]=self.cap.read()
         gl._semrel(1)
         self.signal_finish.emit()
         if self.i==9:

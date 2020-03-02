@@ -1,7 +1,24 @@
-# import logging
-# logging.basicConfig(level = logging.DEBUG,format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-import globalvar as gl
-gl._init()
-sem1=gl._getsem1()
-sem2=gl._getsem2()
-print(1)
+from stl import mesh
+from mpl_toolkits import mplot3d
+from matplotlib import pyplot
+
+# Create a new plot
+figure = pyplot.figure()
+axes = mplot3d.Axes3D(figure)
+
+# Load the STL files and add the vectors to the plot
+your_mesh = mesh.Mesh.from_file('D:\\code\\白宫.stl')
+axes.add_collection3d(mplot3d.art3d.Poly3DCollection(your_mesh.vectors))
+
+# Auto scale to the mesh size
+scale = your_mesh.points.flatten('C')
+axes.auto_scale_xyz(scale, scale, scale)
+
+#去掉边框
+axes.spines['top'].set_visible(False)
+axes.spines['right'].set_visible(False)
+axes.spines['bottom'].set_visible(False)
+axes.spines['left'].set_visible(False)
+
+# Show the plot to the screen
+pyplot.show()

@@ -9,9 +9,9 @@ import time
 import globalvar as gl
 import acquireimg
 import processimg
-import showimg
-
 import numpy as np
+import logging
+
 # Work status
 isCapture=True
 isprocess=False
@@ -26,12 +26,12 @@ class UsingUi(QtWidgets.QMainWindow, Ui_MainWindow):
         self.start_time=time.perf_counter()
         self.frame_count=0
     def refreshimg(self):
-        gl._semacq(1)
+        gl._semacq(2)
         cv2.cvtColor(gl.frame[self.i], cv2.COLOR_BGR2RGB,gl.frame[self.i])
         # key proccessssssss
-        img=np.require(gl.frame[self.i],np.uint8,'C')      
+        #img=np.require(gl.frame[self.i],np.uint8,'C')      
 
-        QImg = QImage(img.data, gl.height, gl.width, gl.height * 3,QImage.Format_RGB888)
+        QImg = QImage(gl.frame[self.i].data, gl.height, gl.width, gl.height * 3,QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(QImg)
         self.label.setPixmap(pixmap)
         gl._semrel(0)
@@ -57,27 +57,22 @@ if __name__ == '__main__':  # entrance
     gl._init()
     acq=acquireimg.acquireimg()
     proc=processimg.processimg()
-    show=showimg.showimg(win)
 
-
-    
     #thread setup
     acqthread=QtCore.QThread()
     procthread=QtCore.QThread()
-    showthread=QtCore.QThread()
     
     acq.moveToThread(acqthread)
     proc.moveToThread(procthread)
-    show.moveToThread(showthread)
+
     #connect signal and slot
-    acq.signal_finish.connect(win.refreshimg)
+    acq.signal_finish.connect(proc.findmarker)
+    proc.signal_finish.connect(win.refreshimg)
     win.sig_show_finish.connect(acq.run)
     win.sig_show_finish.connect(win.refreshFPS)
-
 
     win.show()
     acqthread.start()
     procthread.start()
-    showthread.start()
     acq.run()
     sys.exit(app.exec_())
