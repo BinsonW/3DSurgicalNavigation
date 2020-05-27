@@ -3,6 +3,7 @@ import cv2
 from PyQt5 import QtWidgets, QtCore
 import globalvar as gl
 import numpy as np
+import ptvsd
 # Processframe thread
 
 
@@ -21,11 +22,11 @@ class processimg(QtCore.QObject):
 
         # Filter by Area.
         self.params.filterByArea = False
-        self.params.minArea = 1500
+        self.params.minArea = 3000
 
         # Filter by Circularity
         self.params.filterByCircularity = False
-        self.params.minCircularity = 0.1
+        self.params.minCircularity = 0.8
 
         # Filter by Convexity
         self.params.filterByConvexity = False
@@ -33,25 +34,26 @@ class processimg(QtCore.QObject):
 
         # Filter by Inertia
         self.params.filterByInertia = False
-        self.params.minInertiaRatio = 0.01
+        self.params.minInertiaRatio = 0.8
 
         # Create a detector with the parameters
         self.detector = cv2.SimpleBlobDetector_create(self.params)
         self.i = 0
 
     def findmarker(self):
-        # ptvsd.debug_this_thread()
-        gl._semacq(1)
+        #ptvsd.debug_this_thread()
+        gl._semacq(2)
         # Detect blobs.
+        
         self.keypoints = self.detector.detect(gl.frame[self.i])
 
         # Draw detected blobs as red circles.
         # cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures
         # the size of the circle corresponds to the size of blob
 
-        gl.frame[self.i] = cv2.drawKeypoints(gl.frame[self.i], self.keypoints, np.array(
+        gl.frame_proc[self.i] = cv2.drawKeypoints(gl.frame[self.i], self.keypoints, np.array(
             []), (0, 0, 255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-        gl._semrel(2)
+        gl._semrel(3)
         self.signal_finish.emit()
         if self.i == 9:
             self.i = 0
