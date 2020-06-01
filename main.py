@@ -87,10 +87,10 @@ if __name__ == '__main__':  # entrance
     acq=acquireimg.acquireimg()
     proc=processimg.processimg()
     proj3D=projector3Dview.proj3D()
-    screen3d=screen3Dview.screen3D()
+    #screen3d=screen3Dview.screen3D()
     #add widget
-    win.gridLayout.addWidget(proj3D,1,0)
-    win.gridLayout.addWidget(screen3d,1,1)
+    win.gridLayout.addWidget(proj3D,1,0,-1,-1)
+    #win.gridLayout.addWidget(screen3d,1,1)
     #thread setup
     acqthread=QtCore.QThread()
     procthread=QtCore.QThread()
