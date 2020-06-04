@@ -1,0 +1,45 @@
+INFO:instrumental.drivers:Importing driver module 'cameras.picam'
+INFO:instrumental.drivers:Error when importing driver module cameras.picam: <<No module named 'nicelib'>>
+INFO:instrumental.drivers:Importing driver module 'cameras.pixelfly'
+INFO:instrumental.drivers:Error when importing driver module cameras.pixelfly: <<cannot import name 'clock' from 'time' (unknown location)>>
+INFO:instrumental.drivers:Importing driver module 'cameras.pvcam'
+INFO:instrumental.drivers:Error when importing driver module cameras.pvcam: <<No module named 'cffi'>>
+INFO:instrumental.drivers:Importing driver module 'cameras.tsi'
+INFO:instrumental.drivers:Error when importing driver module cameras.tsi: <<cannot import name 'clock' from 'time' (unknown location)>>
+INFO:instrumental.drivers:Importing driver module 'cameras.uc480'
+INFO:instrumental.drivers:Error when importing driver module cameras.uc480: <<No module named 'win32event'>>
+INFO:instrumental.drivers:Importing driver module 'daq.ni'
+INFO:instrumental.drivers:Error when importing driver module daq.ni: <<No module named 'nicelib'>>
+INFO:instrumental.drivers:Importing driver module 'funcgenerators.tektronix'
+INFO:instrumental.drivers:Importing driver module 'lockins.sr850'
+INFO:instrumental.drivers:Error when importing driver module lockins.sr850: <<No module named 'visa'>>
+INFO:instrumental.drivers:Importing driver module 'motion.ecc100'
+INFO:instrumental.drivers:Error when importing driver module motion.ecc100: <<Could not find module 'ecc.dll' (or one of its dependencies). Try using the full path with constructor syntax.>>
+INFO:instrumental.drivers:Importing driver module 'motion.filter_flipper'
+INFO:instrumental.drivers:Error when importing driver module motion.filter_flipper: <<No module named 'cffi'>>
+INFO:instrumental.drivers:Importing driver module 'motion.kinesis'
+INFO:instrumental.drivers:Error when importing driver module motion.kinesis: <<No module named 'nicelib'>>
+INFO:instrumental.drivers:Importing driver module 'motion.tdc_001'
+INFO:instrumental.drivers:Error when importing driver module motion.tdc_001: <<No module named 'nicelib'>>
+INFO:instrumental.drivers:Importing driver module 'multimeters.hp'
+INFO:instrumental.drivers:Importing driver module 'powermeters.thorlabs'
+INFO:instrumental.drivers:Importing driver module 'scopes.tektronix'
+INFO:instrumental.drivers:Error when importing driver module scopes.tektronix: <<No module named 'visa'>>
+INFO:instrumental.drivers:Importing driver module 'spectrometers.bristol'
+INFO:instrumental.drivers:Error when importing driver module spectrometers.bristol: <<Could not find module 'BristolFFT.dll' (or one of its dependencies). Try using the full path with constructor syntax.>>
+INFO:instrumental.drivers:Importing driver module 'spectrometers.thorlabs_ccs'
+INFO:instrumental.drivers:Error when importing driver module spectrometers.thorlabs_ccs: <<No module named 'visa'>>
+INFO:instrumental.drivers:Importing driver module 'tempcontrollers.covesion'
+INFO:instrumental.drivers:Error when importing driver module tempcontrollers.covesion: <<No module named 'pyvisa'>>
+INFO:instrumental.drivers:Importing driver module 'tempcontrollers.hcphotonics'
+INFO:instrumental.drivers:Error when importing driver module tempcontrollers.hcphotonics: <<No module named 'pyvisa'>>
+INFO:instrumental.drivers:Importing driver module 'lasers.femto_ferb'
+INFO:instrumental.drivers:Importing driver module 'powermeters.newport'
+INFO:instrumental.drivers:Importing driver module 'cameras.pco'
+INFO:instrumental.drivers:Error when importing driver module cameras.pco: <<cannot import name 'clock' from 'time' (unknown location)>>
+INFO:instrumental.drivers:Importing driver module 'vacuum.sentorr_mod'
+INFO:instrumental.drivers:Error when importing driver module vacuum.sentorr_mod: <<No module named 'serial'>>
+INFO:instrumental.drivers:Importing driver module 'wavemeters.burleigh'
+INFO:instrumental.drivers:Program is exiting, closing all instruments...
+INFO:instrumental.drivers:Done closing instruments
+INFO:instrumental.drivers:Doing driver module-level cleanup...
