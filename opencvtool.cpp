@@ -38,7 +38,7 @@ QImage OpenCVTool::Mat2QImage(Mat& image)
     QImage img;
 
     if (image.channels() == 3) { // 彩色图
-        cvtColor(image, image, CV_BGR2RGB);
+        cvtColor(image, image, COLOR_BGR2RGB);
         img = QImage((const unsigned char *)(image.data), image.cols, image.rows,
                      image.cols*image.channels(), QImage::Format_RGB888);
     } else if (image.channels() == 1) { // 灰度图
@@ -65,7 +65,7 @@ Mat OpenCVTool::QImageToMat(QImage &image)
         break;
     case QImage::Format_RGB888:
         mat = Mat(image.height(), image.width(), CV_8UC3, (void*)image.constBits(), image.bytesPerLine());
-        cvtColor(mat, mat, CV_BGR2RGB);
+        cvtColor(mat, mat, COLOR_BGR2RGB);
         break;
     case QImage::Format_Indexed8:
     case QImage::Format_Grayscale8:

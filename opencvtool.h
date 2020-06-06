@@ -3,7 +3,7 @@
 
 #include <QLabel>
 
-#include "opencv2/opencv.hpp"
+#include "opencv.hpp"
 
 using namespace std;
 using namespace cv;

@@ -50,4 +50,9 @@ LIBS += -LE:\companyprogram\NavigGUI(Guoj) -luc480_64 -luser32# 相机驱动;鼠
 RESOURCES += \
     resource.qrc
 
-include (E:\opencv\opencv320\opencv320.pri)
+include (opencv430.pri)
+INCLUDEPATH+="$$PWD/opencv/include/"
+INCLUDEPATH+="$$PWD/opencv/include/opencv2"
+
+DISTFILES += \
+    opencv430.pri
