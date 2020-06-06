@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>icons/back.jpg</file>
+        <file>icons/next.jpg</file>
+        <file>icons/logo.ico</file>
+        <file>icons/brower.png</file>
+        <file>icons/focus.png</file>
+        <file>icons/person.png</file>
+        <file>icons/brower_open.png</file>
+        <file>icons/register.jpg</file>
+        <file>icons/checkerboard.png</file>
+    </qresource>
+</RCC>
