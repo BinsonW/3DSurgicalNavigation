@@ -9,5 +9,6 @@
         <file>icons/brower_open.png</file>
         <file>icons/register.jpg</file>
         <file>icons/checkerboard.png</file>
+        <file>icons/图片1.png</file>
     </qresource>
 </RCC>

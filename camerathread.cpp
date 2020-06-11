@@ -60,19 +60,19 @@ camerathread::camerathread(QObject *parent) : QThread(parent)
     m_iAdjustCount = 0;
     m_queueDirection.clear();
 
-    // 校准
+//    // 校准
     m_iCalibration = 0;
     m_ptRectSta = Point(0, 0);
     m_ptRectEnd = Point(0, 0);
     m_sizeBoard = Size(5, 3);    // 标定板上每行、列的角点数
 
-    // 白光模式
+//    // 白光模式
     m_bWhiteMode = false;
 
-    m_bInverseGray = false;
-    m_benhance = false;
+//    m_bInverseGray = false;
+//    m_benhance = false;
 
-    m_strAge = "40";    
+//    m_strAge = "40";
 }
 
 camerathread::~camerathread()
@@ -132,31 +132,31 @@ void camerathread::run()
                     // 构造Mat
                     Mat img(m_nSizeY, m_nSizeX, CV_8UC1, m_pcImageMemory);
 
-                    // 保存图像
-                    if(m_bSaveImg)
-                    {
-                        m_bSaveImg = false;
-                        captureAImage(img);
-                    }
+//                    // 保存图像
+//                    if(m_bSaveImg)
+//                    {
+//                        m_bSaveImg = false;
+//                        captureAImage(img);
+//                    }
 
                     // 自动对焦
                     performAutoFocus_Sim(img);
 
-                    // 对比度增强
-                    if(m_benhance)
-                    {
-                        if(0)
-                            equalizeHist(img, img); // 直方图变换
-                        else
-                        {
-                            // Gamma矫正
-                            Mat X;
-                            img.convertTo(X, CV_32FC1); // 转为浮点数
-                            float gamma = 1/2.2;
-                            pow(X, gamma, X); // gamma矫正
-                            normalize(X, img, 0, 255, NORM_MINMAX, CV_8UC1); // 归一化并赋值回img
-                        }
-                    }
+//                    // 对比度增强
+//                    if(m_benhance)
+//                    {
+//                        if(0)
+//                            equalizeHist(img, img); // 直方图变换
+//                        else
+//                        {
+//                            // Gamma矫正
+//                            Mat X;
+//                            img.convertTo(X, CV_32FC1); // 转为浮点数
+//                            float gamma = 1/2.2;
+//                            pow(X, gamma, X); // gamma矫正
+//                            normalize(X, img, 0, 255, NORM_MINMAX, CV_8UC1); // 归一化并赋值回img
+//                        }
+//                    }
 
                     // 投影缩放
                     Mat imgp = OpenCVTool::MatResize(img, m_dscale);
@@ -165,7 +165,7 @@ void camerathread::run()
                         flip(imgp, imgp, 1);
                     if(m_bflipUD) // 上下翻转
                         flip(imgp, imgp, 0);
-                    // 投影
+                     //投影
                     if(m_iCalibration == -1) // 切换到校准界面
                         imshow("Project", m_matWhitePro);
                     else
@@ -175,7 +175,7 @@ void camerathread::run()
                         imshow("Project", green);
                     }
 
-                    // 校准
+//                    // 校准
                     performCalibration(img); // 校准会改变图像
 
                     // 显示
@@ -427,7 +427,7 @@ double camerathread::calcImgClearness(Mat &img)
     // 转为灰度图
     Mat img1;
     if(img.channels() == 3)
-        cvtColor(img, img1, CV_RGB2GRAY);
+        cvtColor(img, img1, COLOR_RGB2GRAY);
     else
         img1 = img;
 
@@ -716,51 +716,51 @@ void camerathread::GetMaxImageSize(INT *pnSizeX, INT *pnSizeY)
 //}
 
 // 抓取一帧图像
-void camerathread::captureAImage(Mat &img)
-{
-    if (m_hG != 0)
-    {
-        // 转为Mat
-        Mat imgnew = img.clone();
-        Mat imgH;
-        equalizeHist(img, imgH); // 直方图均衡化图像
-        ImageStruct imgdata;
-        imgdata.bIsSave = false;
-        imgdata.matImg = imgnew;
-        imgdata.matImgH = imgH;
-        imgdata.strName = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmsszzz");
-        m_vecSnapImgs.push_back(imgdata);
+//void camerathread::captureAImage(Mat &img)
+//{
+//    if (m_hG != 0)
+//    {
+//        // 转为Mat
+//        Mat imgnew = img.clone();
+//        Mat imgH;
+//        equalizeHist(img, imgH); // 直方图均衡化图像
+//        ImageStruct imgdata;
+//        imgdata.bIsSave = false;
+//        imgdata.matImg = imgnew;
+//        imgdata.matImgH = imgH;
+//        imgdata.strName = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmsszzz");
+//        m_vecSnapImgs.push_back(imgdata);
 
-        // 历史记录中添加缩略图
-        Mat snapimgnew = img.clone();
-        QImage qimg = OpenCVTool::Mat2QImage(snapimgnew);
-        emit snapAImage(QIcon(QPixmap::fromImage(qimg).scaled(QSize(100,100))), imgdata.strName);
-    }
-}
+//        // 历史记录中添加缩略图
+//        Mat snapimgnew = img.clone();
+//        QImage qimg = OpenCVTool::Mat2QImage(snapimgnew);
+//        emit snapAImage(QIcon(QPixmap::fromImage(qimg).scaled(QSize(100,100))), imgdata.strName);
+//    }
+//}
 
 // 保存图像
-void camerathread::saveImages(QString strSavePath)
-{
-    // 创建文件夹
-    QDir dir(strSavePath);
-    if(!dir.exists())
-        dir.mkpath(strSavePath);
+//void camerathread::saveImages(QString strSavePath)
+//{
+//    // 创建文件夹
+//    QDir dir(strSavePath);
+//    if(!dir.exists())
+//        dir.mkpath(strSavePath);
 
-    // 保存
-    for(int i = 0; i < m_vecSnapImgs.size(); i++)
-    {
-        if(m_vecSnapImgs[i].bIsSave == false)
-        {
-            QString strfile = strSavePath + "//" + m_vecSnapImgs[i].strName + ".png";
-            if(imwrite(strfile.toStdString(), m_vecSnapImgs[i].matImg))
-                m_vecSnapImgs[i].bIsSave = true;
+//    // 保存
+//    for(int i = 0; i < m_vecSnapImgs.size(); i++)
+//    {
+//        if(m_vecSnapImgs[i].bIsSave == false)
+//        {
+//            QString strfile = strSavePath + "//" + m_vecSnapImgs[i].strName + ".png";
+//            if(imwrite(strfile.toStdString(), m_vecSnapImgs[i].matImg))
+//                m_vecSnapImgs[i].bIsSave = true;
 
-            // 保存直方均衡化图像
-            QString strfileH = strSavePath + "//" + m_vecSnapImgs[i].strName + "_Histeq.png";
-            imwrite(strfileH.toStdString(), m_vecSnapImgs[i].matImgH);
-        }
-    }
-}
+//            // 保存直方均衡化图像
+//            QString strfileH = strSavePath + "//" + m_vecSnapImgs[i].strName + "_Histeq.png";
+//            imwrite(strfileH.toStdString(), m_vecSnapImgs[i].matImgH);
+//        }
+//    }
+//}
 
 // 设置曝光时间
 void camerathread::setExposure(int nexp)

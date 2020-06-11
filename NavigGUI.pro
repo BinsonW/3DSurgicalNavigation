@@ -1,58 +1,63 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2017-03-25T09:04:08
-#
-#-------------------------------------------------
-
-QT       += core gui sql serialport
-
+QT       += core gui serialport
+QT += 3dcore 3drender 3dinput 3dlogic 3dextras 3danimation
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = NavigGUI
-TEMPLATE = app
+TARGET =app
+
+CONFIG += c++11
 
 QMAKE_LFLAGS += /MANIFESTUAC:\"level=\'requireAdministrator\' uiAccess=\'false\'\" # 提升权限，以修改系统时间
+
+# The following define makes your compiler emit warnings if you use
+# any Qt feature that has been marked deprecated (the exact warnings
+# depend on your compiler). Please consult the documentation of the
+# deprecated API in order to know how to port your code away from it.
+DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     camerathread.cpp \
     setcameradlg.cpp \
-    database.cpp \
     settimedlg.cpp \
     setprojectordlg.cpp \
-    datastatdlg.cpp \
-    datamanagedlg.cpp \
-    opencvtool.cpp
+    opencvtool.cpp \
+    widget3d.cpp
 
 HEADERS  += mainwindow.h \
     uc480.h \
     uc480_deprecated.h \
     camerathread.h \
     setcameradlg.h \
-    database.h \
     settimedlg.h \
     setprojectordlg.h \
-    datastatdlg.h \
-    datamanagedlg.h \
-    opencvtool.h
+    opencvtool.h \
+    widget3d.h
 
 FORMS    += mainwindow.ui \
     setcameradlg.ui \
     settimedlg.ui \
-    setprojectordlg.ui \
-    datastatdlg.ui \
-    datamanagedlg.ui
+    setprojectordlg.ui
 
-LIBS += -LE:\companyprogram\NavigGUI(Guoj) -luc480_64 -luser32# 相机驱动;鼠标禁止移出窗外
+LIBS += -luc480_64 -luser32 # 相机驱动;鼠标禁止移出窗外
 
 #DEFINES += QT_NO_DEBUG_OUTPUT # 屏蔽release版本中所有QDebug()提示信息
 
 RESOURCES += \
     resource.qrc
 
-include (opencv430.pri)
 INCLUDEPATH+="$$PWD/opencv/include/"
 INCLUDEPATH+="$$PWD/opencv/include/opencv2"
 
-DISTFILES += \
-    opencv430.pri
+win32: LIBS += -L$$PWD/opencv/x64/vc16/lib/ -lopencv_world430d
+
+INCLUDEPATH += $$PWD/opencv/x64/vc16
+DEPENDPATH += $$PWD/opencv/x64/vc16
+
+
+win32: LIBS += -L$$PWD/./ -luc480_64
+
+INCLUDEPATH += $$PWD/.
+DEPENDPATH += $$PWD/.
+
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/./uc480_64.lib
+else:win32-g++: PRE_TARGETDEPS += $$PWD/./libuc480_64.a

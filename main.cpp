@@ -37,3 +37,15 @@ int main(int argc, char *argv[])
 
     return a.exec();
 }
+
+
+//#include<opencv.hpp>
+//using namespace cv;
+//int main(){
+//auto img=imread("map.jpg");
+//namedWindow("test");
+//imshow("test",img);
+//waitKey(0);
+//return 0;
+
+//}

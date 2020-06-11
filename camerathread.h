@@ -71,19 +71,19 @@ public:
     bool    m_bflipUD;        // 是否上下翻转
 
     // 当前病人信息
-    QString m_strName;
-    QString m_strSex;
-    QString m_strCheckpos;
-    QString m_strAge;
-    QDate m_dateCheck;
-    QString m_strCheckRoom;
-    QString m_strMenzhenno;
-    QString m_strZhuyuanno;
-    QString m_strBingquno;
-    QString m_strChuangweino;
-    QString m_strTocheckdoctor;
-    QString m_strCheckdoctor;
-    QString m_strComment;
+//    QString m_strName;
+//    QString m_strSex;
+//    QString m_strCheckpos;
+//    QString m_strAge;
+//    QDate m_dateCheck;
+//    QString m_strCheckRoom;
+//    QString m_strMenzhenno;
+//    QString m_strZhuyuanno;
+//    QString m_strBingquno;
+//    QString m_strChuangweino;
+//    QString m_strTocheckdoctor;
+//    QString m_strCheckdoctor;
+//    QString m_strComment;
 
     // 截图
     bool    m_bSaveImg;
@@ -111,11 +111,11 @@ public:
     bool    m_bWhiteMode;
     Mat     m_matWhitePro;
 
-    // 反色
-    bool    m_bInverseGray;
+//    // 反色
+//    bool    m_bInverseGray;
 
-    // 增强对比度
-    bool    m_benhance;
+//    // 增强对比度
+//    bool    m_benhance;
 
 public:
     void stop();
@@ -128,8 +128,8 @@ public:
     void SetHWND(HWND hWnd);
     void setSaveImg();
 
-    void captureAImage(Mat &img);
-    void saveImages(QString strSavePath);
+//    void captureAImage(Mat &img);
+//    void saveImages(QString strSavePath);
     void calcProjectWH(int &iw, int &ih);
     Mat mergeGrayToGreen(Mat &project, Mat &img);
     void setAutoGain(bool bEnable);
@@ -147,7 +147,7 @@ public:
     void SetScreenRect(QVector<QRect> &vecScreenRect);
     void saveProjectStart();
 signals:
-    void snapAImage(QIcon icon, QString strname);
+//    void snapAImage(QIcon icon, QString strname);
     void controlMotor(bool bdirection);
     void updateCalibration();
 
