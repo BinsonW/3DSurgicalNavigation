@@ -16,6 +16,7 @@
 #include "settimedlg.h"
 //#include "datastatdlg.h"
 //#include "datamanagedlg.h"
+#include "projwin.h"
 
 using namespace cv;
 
@@ -60,23 +61,26 @@ MainWindow::MainWindow(QWidget *parent) :
     updateProjectData();
     namedWindow("Project", WINDOW_NORMAL);
     if(m_vecScreenRect.size() > 1)
-    {        
+    {
         moveWindow("Project", m_vecScreenRect[0].width(), 0);
-        setWindowProperty("Project", WND_PROP_FULLSCREEN, WINDOW_FULLSCREEN); // 全屏显示
+        //setWindowProperty("Project", WND_PROP_FULLSCREEN, WINDOW_FULLSCREEN); // 全屏显示
     }
     else
     {
         moveWindow("Project", -1100, 0);
-        resizeWindow("Project", m_camerathd.m_iProjectWidth/2, m_camerathd.m_iProjectHeight/2);
+        //resizeWindow("Project", m_camerathd.m_iProjectWidth/2, m_camerathd.m_iProjectHeight/2);
     }
 
     //三维窗口初始化
-    widget3d=new widget3D();
+//    widget3d=new widget3D();
 //    qDebug()<<"3dwindow initiate complete";
     //ui->horizontalLayout_2->addWidget(widget3d->container);
-    ui->verticalLayout_14->removeWidget(ui->widget_2);
-    ui->verticalLayout_14->addWidget(widget3d->container);
+//    ui->verticalLayout_14->removeWidget(ui->widget_2);
+    //ui->verticalLayout_14->addWidget(widget3d->container);
 //    qDebug()<<"3dwindow add to layout complete";
+
+    //创建投影窗口
+    projwin.show();
 
     // 连接数据库
 //    m_dbUser = "root";          // 用户名
@@ -136,6 +140,8 @@ MainWindow::MainWindow(QWidget *parent) :
     Sleep(100); // 发送启动命令后，立即发送下面命令是否可靠？增加点延时
     sendCommand("LEDPW", "O"); // 开780
     sendCommand("LDDPW", "S"); // 关850
+
+
 }
 
 MainWindow::~MainWindow()

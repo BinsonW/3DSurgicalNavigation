@@ -15,8 +15,12 @@ QMAKE_LFLAGS += /MANIFESTUAC:\"level=\'requireAdministrator\' uiAccess=\'false\'
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
+    Frame.cpp \
+    Model3D.cpp \
         mainwindow.cpp \
     camerathread.cpp \
+    marker.cpp \
+    projwin.cpp \
     setcameradlg.cpp \
     settimedlg.cpp \
     setprojectordlg.cpp \
@@ -24,6 +28,9 @@ SOURCES += main.cpp\
     widget3d.cpp
 
 HEADERS  += mainwindow.h \
+    Frame.h \
+    Model3D.h \
+    projwin.h \
     uc480.h \
     uc480_deprecated.h \
     camerathread.h \
@@ -34,6 +41,7 @@ HEADERS  += mainwindow.h \
     widget3d.h
 
 FORMS    += mainwindow.ui \
+    projwin.ui \
     setcameradlg.ui \
     settimedlg.ui \
     setprojectordlg.ui

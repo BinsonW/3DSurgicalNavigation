@@ -15,6 +15,7 @@
 #include "setcameradlg.h"
 #include "setprojectordlg.h"
 #include "widget3d.h"
+#include "projwin.h"
 
 namespace Ui {
 class MainWindow;
@@ -102,6 +103,9 @@ public:
     void detectMultiScreen();
 
     bool shutdownWindows();
+
+    // 投影窗口
+    projwin projwin;
 
 public slots:
     void readSerialData();
