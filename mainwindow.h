@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -14,8 +14,7 @@
 #include "camerathread.h"
 #include "setcameradlg.h"
 #include "setprojectordlg.h"
-#include "widget3d.h"
-#include "projwin.h"
+#include "Model3D.h"
 
 namespace Ui {
 class MainWindow;
@@ -33,6 +32,9 @@ public:
 
     // 相机变量
     camerathread m_camerathd;   // 相机抓取线程
+
+    //三维显示变量
+    Model3D model3d;
 
     // 设置对话框
     SetCameraDlg m_setcameradlg; // 相机参数设置

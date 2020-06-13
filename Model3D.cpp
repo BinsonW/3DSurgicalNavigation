@@ -1,12 +1,13 @@
-#include "Model3D.h"
+ï»¿#include "Model3D.h"
 
 
 
 
 Model3D::Model3D() :
+
 	tumor(viz::readCloud("wjxtum.stl"), viz::Color::yellow()),
-	inc(viz::readCloud("wjxinc2.stl"),viz::Color::red()),
-	point(viz::readCloud("wjxpoint.stl"), viz::Color::green()),
+    inc(viz::readCloud("wjxinc2.stl"),viz::Color::red()),
+    point(viz::readCloud("wjxpoint.stl"), viz::Color::green()),
 	ProjectWindow("3D Project Window"),
 	ProjectCamera(2.419128343195550e+03*0.724609375, 2.418354228183528e+03*0.724609375, 5.764543077579378e+02*0.724609375, 5.526957147621707e+02*0.724609375, Size(928, 742)),
 	cylinder(Point3d(95, 70, 0), Point3d(95, 70, 100), 10, 30, viz::Color::green()),
@@ -29,7 +30,7 @@ Model3D::Model3D() :
 	// check if widgetpose has been stored
 	widgetposein.open("widgetpose.dat", ios_base::in | ios_base::binary);
 	if (widgetposein.is_open()) {
-		cout << "ÒÑ³É¹¦¶ÁÈ¡Î»ÖÃÊý¾Ý\n";
+		cout << "å·²æˆåŠŸè¯»å–ä½ç½®æ•°æ®\n";
 		widgetposein.read((char *)&pose, sizeof pose);
 		Matx33d r = pose.rotation();
 		Matx33d y(1, 0, 0, 0, 1, 0, 0, 0, -1);
@@ -42,7 +43,7 @@ Model3D::Model3D() :
 		hasposedata = true;
 	}
 	else {
-		cout << "Î´¼ì²âµ½Î»ÖÃÊý¾Ý\n";
+		cout << "æœªæ£€æµ‹åˆ°ä½ç½®æ•°æ®\n";
 	}
 }
 
@@ -68,7 +69,7 @@ int Model3D::regist(Affine3d & scalpose, Affine3d & refpose)
 	Matx33d r_ = r * y;
 	Vec3d t = pose.translation();
 	Affine3d p(r_, t);
-	cout << "×¢²áÎ»ÖÃ "<<pose.translation()<<endl;
+	cout << "æ³¨å†Œä½ç½® "<<pose.translation()<<endl;
 	ProjectWindow.setWidgetPose("ptumor", p);
 	ProjectWindow.setWidgetPose("inc", p);
 	ProjectWindow.setWidgetPose("point", p);
@@ -77,7 +78,7 @@ int Model3D::regist(Affine3d & scalpose, Affine3d & refpose)
 	widgetposeout.open("widgetpose.dat", ios_base::out | ios_base::binary);
 	widgetposeout.write((char *)&pose, sizeof pose);
 	widgetposeout << flush;
-	cout << "ÒÑ³É¹¦´æ´¢Î»ÖÃÊý¾Ý£¡\n\n";
+	cout << "å·²æˆåŠŸå­˜å‚¨ä½ç½®æ•°æ®ï¼\n\n";
 
 	return 1;
 }

@@ -91,7 +91,7 @@ void Frame::findpixrange()
 {
 	capframe();
 	minMaxIdx(frame, &darkpix, &bripix);
-	cout << "ÁÁ¶È·¶Î§ " << darkpix << " " << bripix << endl;
+	cout << "äº®åº¦èŒƒå›´ " << darkpix << " " << bripix << endl;
 }
 bool Frame::inimarparam()
 {
@@ -121,22 +121,22 @@ bool Frame::inimarparam()
 		glmar.params.maxThreshold = glmar.params.maxThreshold - 20;
 		glmar.params.minThreshold = glmar.params.minThreshold > darkpix ? glmar.params.minThreshold : darkpix;
 		if (glmar.params.minThreshold == darkpix) {
-			cout << "Î´ÄÜ¼ì²âµ½ÈÎºÎmarker\n";
+			cout << "æœªèƒ½æ£€æµ‹åˆ°ä»»ä½•marker\n";
 			return false;
 		}
 		glmar.detector = SimpleBlobDetector::create(glmar.params);
 		glmar.detector->detect(frame, glmar.p2Dlast);
-		cout << "¶şÖµ»¯ãĞÖµ·¶Î§: " << glmar.params.minThreshold << " ` " << glmar.params.maxThreshold << endl;
-		cout << "ÕÒµ½ " << glmar.p2Dlast.size() << " ¸öµã\n";
+		cout << "äºŒå€¼åŒ–é˜ˆå€¼èŒƒå›´: " << glmar.params.minThreshold << " ` " << glmar.params.maxThreshold << endl;
+		cout << "æ‰¾åˆ° " << glmar.p2Dlast.size() << " ä¸ªç‚¹\n";
 		if (8 == glmar.p2Dlast.size())
 		{
-			cout << "marker²ÎÊı³õÊ¼»¯³É¹¦£¡\n";
+			cout << "markerå‚æ•°åˆå§‹åŒ–æˆåŠŸï¼\n";
 			glmar.sortp();
 			break;
 		}
 		else if (4 == glmar.p2Dlast.size() && registed)
 		{
-			cout << "marker²ÎÊı³õÊ¼»¯³É¹¦£¡\n";
+			cout << "markerå‚æ•°åˆå§‹åŒ–æˆåŠŸï¼\n";
 			glmar.sortp();
 			break;
 		}
@@ -145,7 +145,7 @@ bool Frame::inimarparam()
 	rmar.params = glmar.params;
 	//unregisted
 	if (!registed) {
-		//ËÑË÷n´Î²¢Ñ¹ÈëÈİÆ÷
+		//æœç´¢næ¬¡å¹¶å‹å…¥å®¹å™¨
 		glmar.p2Dtotal.clear();
 		for (size_t i = 0; i < glmar.meanimgnum; i++)
 		{
@@ -153,19 +153,19 @@ bool Frame::inimarparam()
 			glmar.detector->detect(frame, glmar.p2Dlast);
 			glmar.sortp();
 		}
-		//¼ÆËãmean
+		//è®¡ç®—mean
 		glmar.calmean();
 		seperatemar_p2Dmean();		
 		calHRpose();
 		seperatemar_p2Dlast();
-		//¼ÆËãËÑË÷¾àÀë
+		//è®¡ç®—æœç´¢è·ç¦»
 		rmar.caldist();
-		//¼ÆËããĞÖµÃæ»ı²¢ÉèÖÃ
+		//è®¡ç®—é˜ˆå€¼é¢ç§¯å¹¶è®¾ç½®
 		rmar.calarea();
-		//¼ÆËãËÑË÷µÄ¶şÖµ»¯ãĞÖµ·¶Î§
+		//è®¡ç®—æœç´¢çš„äºŒå€¼åŒ–é˜ˆå€¼èŒƒå›´
 		calbrirange(rmar);
-		cout << "markerÖ±¾¶ " << rmar.size << " ¸öÏñËØ£¬Æ½¾ùÁÁ¶È " << mpix[0];
-		cout << " ,ÖÜÎ§ÏñËØÆ½¾ùÁÁ¶È " << surpix[0] << endl;
+		cout << "markerç›´å¾„ " << rmar.size << " ä¸ªåƒç´ ï¼Œå¹³å‡äº®åº¦ " << mpix[0];
+		cout << " ,å‘¨å›´åƒç´ å¹³å‡äº®åº¦ " << surpix[0] << endl;
 		return true;
 	}
 	//registed
@@ -176,24 +176,24 @@ bool Frame::inimarparam()
 		else {
 			rmar.p2Dlast = glmar.p2Dlast;
 		}
-		//¼ÆËãËÑË÷¾àÀë
+		//è®¡ç®—æœç´¢è·ç¦»
 		rmar.caldist();
-		//¼ÆËããĞÖµÃæ»ı²¢ÉèÖÃ
+		//è®¡ç®—é˜ˆå€¼é¢ç§¯å¹¶è®¾ç½®
 		rmar.calarea();
-		//¼ÆËãËÑË÷µÄ¶şÖµ»¯ãĞÖµ·¶Î§
+		//è®¡ç®—æœç´¢çš„äºŒå€¼åŒ–é˜ˆå€¼èŒƒå›´
 		calbrirange(rmar);
-		cout << "markerÖ±¾¶ " << rmar.size << " ¸öÏñËØ£¬Æ½¾ùÁÁ¶È " << mpix[0];
-		cout << " ,ÖÜÎ§ÏñËØÆ½¾ùÁÁ¶È " << surpix[0] << endl;
-		//ËÑË÷n´Î²¢Ñ¹ÈëÈİÆ÷
+		cout << "markerç›´å¾„ " << rmar.size << " ä¸ªåƒç´ ï¼Œå¹³å‡äº®åº¦ " << mpix[0];
+		cout << " ,å‘¨å›´åƒç´ å¹³å‡äº®åº¦ " << surpix[0] << endl;
+		//æœç´¢næ¬¡å¹¶å‹å…¥å®¹å™¨
 		rmar.detector = SimpleBlobDetector::create(rmar.params);
 		for (size_t i = 0; i < rmar.meanimgnum; i++)
 		{
 			if (!trackmarkers(rmar)) {
-				cout << "¾Ö²¿ËÑË÷Ê§°Ü£¡\n" << endl;
+				cout << "å±€éƒ¨æœç´¢å¤±è´¥ï¼\n" << endl;
 				return false;
 			}
 		}
-		//¼ÆËãmean
+		//è®¡ç®—mean
 		rmar.calmean();
 		return true;
 	}
@@ -209,9 +209,9 @@ void Frame::calbrirange(Frame::marker & mar)
 	circle(surmask, mar.p2Dlast[0].pt, mar.size, Scalar(0, 0, 0), -1);
 	surpix = mean(frame, surmask);
 
-	//¼ÆËã×î¼ÑËÑË÷ÁÁ¶È
+	//è®¡ç®—æœ€ä½³æœç´¢äº®åº¦
 	//calbestbrirange(mar);
-	//ÉèÖÃËÑË÷ÁÁ¶È·¶Î§
+	//è®¾ç½®æœç´¢äº®åº¦èŒƒå›´
 	mar.params.minThreshold = (mpix[0]- surpix[0]) / 3 + surpix[0];
 	mar.params.maxThreshold = mar.params.minThreshold + (mpix[0] - surpix[0]) / 3;
 	mar.params.thresholdStep = (mar.params.maxThreshold - mar.params.minThreshold) / 3;
@@ -219,27 +219,27 @@ void Frame::calbrirange(Frame::marker & mar)
 bool Frame::trackmarkers(marker& mar)
 {
 	for (int i = 0; i < mar.p2Dlast.size(); i++) {
-		//¶¨ÒåËÑË÷ROI
+		//å®šä¹‰æœç´¢ROI
 		Rect box(mar.p2Dlast[i].pt.x - mar.distance / 2, mar.p2Dlast[i].pt.y - mar.distance / 2, mar.distance, mar.distance);
 		if (box.x <= 0 || box.y <= 0 || (box.x + box.width) > imgsize_Cam.width || (box.y + box.height) > imgsize_Cam.height) {
-			cout << "³¬³ö±ß½ç£¬È«¾ÖËÑË÷£¡\n";
+			cout << "è¶…å‡ºè¾¹ç•Œï¼Œå…¨å±€æœç´¢ï¼\n";
 			return false;
 		}
 		Mat roi = frame(box);
 		mar.detector = SimpleBlobDetector::create(mar.params);
-		//Ê¶±ğROIÄÚµÄ×·×Ùµã£¬·ÅÈëÔİ´æÈİÆ÷
+		//è¯†åˆ«ROIå†…çš„è¿½è¸ªç‚¹ï¼Œæ”¾å…¥æš‚å­˜å®¹å™¨
 		mar.detector->detect(roi, mar.p2Dtemp);
-		//³É¹¦Ê¶±ğÒ»¸ö×·×Ùµã
+		//æˆåŠŸè¯†åˆ«ä¸€ä¸ªè¿½è¸ªç‚¹
 		if (mar.p2Dtemp.size() == 1) {
-			//½«×·×Ùµã×ø±êĞŞ¸ÄÎªÈ«¾Ö×ø±ê
+			//å°†è¿½è¸ªç‚¹åæ ‡ä¿®æ”¹ä¸ºå…¨å±€åæ ‡
 			mar.p2Dtemp[0].pt.x += box.x;
 			mar.p2Dtemp[0].pt.y += box.y;
-			//Ñ¹Èë´æ´¢ÈİÆ÷
+			//å‹å…¥å­˜å‚¨å®¹å™¨
 			mar.p2Dlast[i] = mar.p2Dtemp[0];
 		}
-		//²»ÄÜÊ¶±ğÒ»¸ö×·×Ùµã
+		//ä¸èƒ½è¯†åˆ«ä¸€ä¸ªè¿½è¸ªç‚¹
 		else {
-			cout << "²»ÄÜÊ¶±ğµÚ " << to_string(i + 1) << " ¸ö×·×Ùµã£¬³¢ÊÔÈ«¾ÖËÑË÷\n";
+			cout << "ä¸èƒ½è¯†åˆ«ç¬¬ " << to_string(i + 1) << " ä¸ªè¿½è¸ªç‚¹ï¼Œå°è¯•å…¨å±€æœç´¢\n";
 			return false;
 		}
 	}
@@ -300,14 +300,14 @@ bool Frame::globalsearch()
 
 		if (3 == i)
 		{
-			cout << "Î´ÄÜËÑË÷µ½marker£¬ÖØĞÂ³õÊ¼»¯ËÑË÷²ÎÊı\n";
+			cout << "æœªèƒ½æœç´¢åˆ°markerï¼Œé‡æ–°åˆå§‹åŒ–æœç´¢å‚æ•°\n";
 			inimarparam(rmar);
 			i = 0;
 			continue;
 		}
 		i++;
 	} while (rmar.marnum != rmar.p2Dlast.size() || !rmar.iseqsize());
-	cout << "È«¾ÖËÑË÷³É¹¦£¡\n";
+	cout << "å…¨å±€æœç´¢æˆåŠŸï¼\n";
 	return true;
 #else
 	glmar.detector = SimpleBlobDetector::create(rmar.params);
@@ -319,7 +319,7 @@ bool Frame::globalsearch()
 		rmar.calarea();
 		calbrirange(rmar);
 		rmar.calmean();
-		cout << "È«¾ÖËÑË÷³É¹¦£¡\n";
+		cout << "å…¨å±€æœç´¢æˆåŠŸï¼\n";
 		return true;
 	}
 	if (4 == glmar.p2Dlast.size() && glmar.iseqsize()) {
@@ -329,11 +329,11 @@ bool Frame::globalsearch()
 		rmar.calarea();
 		calbrirange(rmar);
 		rmar.calmean();
-		cout << "È«¾ÖËÑË÷³É¹¦£¡\n";
+		cout << "å…¨å±€æœç´¢æˆåŠŸï¼\n";
 		return true;
 	}
 	else {
-		cout << "È«¾ÖËÑË÷Ê§°Ü£¬ËÑË÷²ÎÊı³õÊ¼»¯²¢ÖØĞÂËÑË÷\n";
+		cout << "å…¨å±€æœç´¢å¤±è´¥ï¼Œæœç´¢å‚æ•°åˆå§‹åŒ–å¹¶é‡æ–°æœç´¢\n";
 		return false;
 	}
 #endif // webcam
@@ -370,7 +370,7 @@ bool Frame::calbestbrirange(marker & mar)
 					m++;
 			}
 			float ratio = static_cast<float>(m) / 10;
-			cout << "¶şÖµ»¯ãĞÖµ·¶Î§: " << mar.params.minThreshold << " ` " << mar.params.maxThreshold <</* " ÕÒµ½ " << mar.p2Dlast.size() << " ¸öµã " <<*/ " Ê®´Î¼ì³öÂÊ " << ratio * 100 << "%" << endl;
+			cout << "äºŒå€¼åŒ–é˜ˆå€¼èŒƒå›´: " << mar.params.minThreshold << " ` " << mar.params.maxThreshold <</* " æ‰¾åˆ° " << mar.p2Dlast.size() << " ä¸ªç‚¹ " <<*/ " åæ¬¡æ£€å‡ºç‡ " << ratio * 100 << "%" << endl;
 		}
 	}
 
@@ -505,7 +505,7 @@ bool Frame::seperatemar_p2Dmean()
 		rmar.p2Dmean.assign(glmar.p2Dmean.begin() + 4, glmar.p2Dmean.begin() + 8);
 	}
 	else {
-		//ÏÈ²Î¿¼¼Ü
+		//å…ˆå‚è€ƒæ¶
 		rmar.p2Dmean.assign(glmar.p2Dmean.begin(), glmar.p2Dmean.begin() + 4);
 		hmar.p2Dmean.assign(glmar.p2Dmean.begin() + 4, glmar.p2Dmean.begin() + 8);
 	}

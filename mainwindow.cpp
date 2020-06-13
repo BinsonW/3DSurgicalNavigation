@@ -1,4 +1,4 @@
-#include <QDebug>
+﻿#include <QDebug>
 #include <QString>
 #include <QTimer>
 #include <QPixmap>
@@ -26,11 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-//    m_strCurPersonID = "";
-//    m_strSavePath = "E://Navig//";
-//    m_strPersonPath = m_strSavePath;
-//    m_vecUserImgs.clear();
-//    m_bIsPersonInfo = true;
     m_bOpenProject = false;
     m_bOpenLaser = false;
     m_bAutoGain = false;
@@ -70,8 +65,10 @@ MainWindow::MainWindow(QWidget *parent) :
         moveWindow("Project", -1100, 0);
         //resizeWindow("Project", m_camerathd.m_iProjectWidth/2, m_camerathd.m_iProjectHeight/2);
     }
+    //三位窗口 vtk
+    model3d()
 
-    //三维窗口初始化
+    //三维窗口初始化 Qt3d
 //    widget3d=new widget3D();
 //    qDebug()<<"3dwindow initiate complete";
     //ui->horizontalLayout_2->addWidget(widget3d->container);
@@ -80,26 +77,14 @@ MainWindow::MainWindow(QWidget *parent) :
 //    qDebug()<<"3dwindow add to layout complete";
 
     //创建投影窗口
-    projwin.show();
-
-    // 连接数据库
-//    m_dbUser = "root";          // 用户名
-//    m_dbPasswd = "123456";      // 密码
-//    m_dbName = "lightImg.db";   // 文件名
-//    m_dbTable = "data";         // 表名
-//    DataBase::getInstance()->linkDB(m_dbUser, m_dbPasswd, m_dbName, m_dbTable);
+//    projwin.show();
 
     // 开启定时器
 //    m_iTimerId = startTimer(33);
-    timer=new QTimer(this);
-    connect(timer,SIGNAL(timeout()),this,SLOT(grab3dscene()));
-    timer->start(0);
-
-
-    // 设置listwidget
-//    ui->listWidget_historyimage->setSpacing(10);
-//    ui->listWidget_historyimage->setIconSize(QSize(150,150));
-//    connect(&m_camerathd, SIGNAL(snapAImage(QIcon, QString)), this, SLOT(updateHistoryList_Capture(QIcon, QString)));
+    // 抓取3d场景截图的定时器，弃用
+//    timer=new QTimer(this);
+//    connect(timer,SIGNAL(timeout()),this,SLOT(grab3dscene()));
+//    timer->start(0);
 
     // 状态栏配置
     m_labelRunTime = new QLabel; // 运行时间
@@ -129,12 +114,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->horizontalSlider_gain->setValue(settings.value("CameraPara/SliderGain", 0).toInt());
     ui->horizontalSlider_bright->setValue(settings.value("Project/SliderBright", 0).toInt());
 
-    // 初始状态
-//    on_pushButton_createperson_clicked(); // 新建一个病人
-//    ui->stackedWidget->setCurrentIndex(0);
-//    ui->stackedWidget_buttons->setCurrentIndex(0);
-//    ui->tabWidget_show->setCurrentIndex(0);
-
     // 向串口发启动命令
     sendCommand("START");
     Sleep(100); // 发送启动命令后，立即发送下面命令是否可靠？增加点延时
@@ -149,7 +128,6 @@ MainWindow::~MainWindow()
     // 关闭串口
     closeSerialPort();
     widget3d->container->close();
-    delete widget3d;
     delete ui;
 }
 
@@ -277,41 +255,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     qDebug()<<"Program Over.";
 }
 
-// 个人信息选项卡
-//void MainWindow::on_pushButton_personinfo_clicked()
-//{
-//    // 从其他界面切换过来，加载之前的病人信息
-//    ui->lineEdit_name->setText(m_camerathd.m_strName);
-//    ui->comboBox_sex->setCurrentText(m_camerathd.m_strSex);
-//    ui->lineEdit_checkpos->setText(m_camerathd.m_strCheckpos);
-//    ui->spinBox_age->setValue(m_camerathd.m_strAge.toInt());
-//    ui->dateEdit_date->setDate(m_camerathd.m_dateCheck);
-//    ui->lineEdit_checkroom->setText(m_camerathd.m_strCheckRoom);
-//    ui->lineEdit_menzhenno->setText(m_camerathd.m_strMenzhenno);
-//    ui->lineEdit_zhuyuanno->setText(m_camerathd.m_strZhuyuanno);
-//    ui->lineEdit_bingquno->setText(m_camerathd.m_strBingquno);
-//    ui->lineEdit_chuangweino->setText(m_camerathd.m_strChuangweino);
-//    ui->lineEdit_tocheckdoctor->setText(m_camerathd.m_strTocheckdoctor);
-//    ui->lineEdit_checkdoctor->setText(m_camerathd.m_strCheckdoctor);
-//    ui->textEdit_comment->setText(m_camerathd.m_strComment);
-
-//    // 从病案浏览回到个人信息的时候，加载已拍摄的图像的缩略图
-//    m_vecUserImgs.clear();
-//    ui->listWidget_historyimage->clear();
-//    for(int i = 0; i < m_camerathd.m_vecSnapImgs.size(); i++)
-//    {
-//        Mat imgnew = m_camerathd.m_vecSnapImgs[i].matImg.clone();
-//        QImage qimg = OpenCVTool::Mat2QImage(imgnew);
-//        updateHistoryList(QIcon(QPixmap::fromImage(qimg).scaled(QSize(100,100))),
-//                          m_camerathd.m_vecSnapImgs[i].strName);
-//    }
-
-//    m_bIsPersonInfo = true;
-//    ui->stackedWidget->setCurrentIndex(0);
-//    ui->stackedWidget_buttons->setCurrentIndex(0);
-//    ui->tabWidget_show->setCurrentIndex(0);
-//}
-
 // 对焦选项卡
 void MainWindow::on_pushButton_focus_clicked()
 {
@@ -326,7 +269,7 @@ void MainWindow::on_pushButton_states_clicked()
     ui->stackedWidget->setCurrentIndex(0);
 }
 
-// 模型选项卡
+// 三维模型选项卡
 void MainWindow::on_pushButton_modelbrower_clicked()
 {
     qDebug()<<"focus button";
@@ -338,246 +281,6 @@ void MainWindow::on_action_camerasetting_triggered()
 {
     m_setcameradlg.performDlg();
 }
-
-// 新建病人
-//void MainWindow::on_pushButton_createperson_clicked()
-//{
-//    // 设置ID为系统当前时间
-//    m_strCurPersonID = QDateTime::currentDateTime().toString("yyyyMMddhhmmss");
-//    m_strPersonPath = m_strSavePath + m_strCurPersonID;
-//    qDebug()<<m_strCurPersonID;
-//    m_camerathd.m_vecSnapImgs.clear();
-
-//    // 清空各框
-//    ui->lineEdit_name->setText("");
-//    ui->comboBox_sex->setCurrentIndex(0);
-//    ui->lineEdit_checkpos->setText("");
-//    ui->spinBox_age->setValue(40);
-//    ui->dateEdit_date->setDate(QDate::currentDate());
-//    ui->lineEdit_checkroom->setText("");
-//    ui->lineEdit_menzhenno->setText("");
-//    ui->lineEdit_zhuyuanno->setText("");
-//    ui->lineEdit_bingquno->setText("");
-//    ui->lineEdit_chuangweino->setText("");
-//    ui->lineEdit_tocheckdoctor->setText("");
-//    ui->lineEdit_checkdoctor->setText("");
-//    ui->textEdit_comment->setText("");
-//    ui->listWidget_historyimage->clear();
-
-//    // 焦点放在姓名上
-//    ui->lineEdit_name->setFocus();
-
-//    qDebug()<<"Create a Person.";
-//}
-
-// 保存病人信息
-//void MainWindow::on_pushButton_saveperson_clicked()
-//{
-//    // 构造数据
-//    QVector<QString> vecdata;
-//    vecdata.clear();
-//    vecdata.push_back(m_strCurPersonID);
-//    vecdata.push_back(ui->lineEdit_name->text());
-//    vecdata.push_back(ui->comboBox_sex->currentText());
-//    vecdata.push_back(ui->lineEdit_checkpos->text());
-//    vecdata.push_back(QString("%1").arg(ui->spinBox_age->value()));
-//    vecdata.push_back(ui->dateEdit_date->date().toString("yyyy/MM/dd"));
-//    vecdata.push_back(ui->lineEdit_checkroom->text());
-//    vecdata.push_back(ui->lineEdit_menzhenno->text());
-//    vecdata.push_back(ui->lineEdit_zhuyuanno->text());
-//    vecdata.push_back(ui->lineEdit_bingquno->text());
-//    vecdata.push_back(ui->lineEdit_chuangweino->text());
-//    vecdata.push_back(ui->lineEdit_tocheckdoctor->text());
-//    vecdata.push_back(ui->lineEdit_checkdoctor->text());
-//    vecdata.push_back(ui->textEdit_comment->toPlainText());
-//    vecdata.push_back(m_strPersonPath);
-
-//    // 插入数据库
-//    if(DataBase::getInstance()->queryItemByID(m_strCurPersonID))
-//        DataBase::getInstance()->updateItem(vecdata); // 更新
-//    else
-//        DataBase::getInstance()->insertItem(vecdata); // 插入
-
-//    // 保存图像
-//    m_camerathd.saveImages(m_strPersonPath);
-//}
-
-//// 病例浏览选项卡
-//void MainWindow::on_pushButton_illbrower_clicked()
-//{
-//    m_bIsPersonInfo = false;
-//    ui->stackedWidget->setCurrentIndex(2);
-//    ui->tabWidget_show->setCurrentIndex(1);
-
-//    // 更新数据库
-//    queryPersonlist("");
-//}
-
-//// 查询病例
-//void MainWindow::on_pushButton_query_clicked()
-//{
-//    QString strname = ui->lineEdit_inputname->text();
-//    queryPersonlist(strname);
-//}
-
-//// 病例查询与更新
-//void MainWindow::queryPersonlist(QString strname)
-//{
-//    // 查询数据库
-//    m_tableData.clear();
-//    DataBase::getInstance()->queryAllItems(m_tableData, strname);
-//    qDebug()<<"total count is "<<m_tableData.size();
-
-//    // 显示
-//    int icolumn = DataBase::getInstance()->m_iColumns-2; // 减2是因为不显示ID和路径
-//    ui->tableWidget_personlist->clear();
-//    ui->tableWidget_personlist->setRowCount(m_tableData.size());
-//    ui->tableWidget_personlist->setColumnCount(icolumn);
-//    QString str = "姓名,性别,部位,年龄,日期,送检科室,门诊编号,住院编号,病区编号,床位编号,送检医生,医生,备注信息";
-//    QStringList strlist = str.split(",");
-//    ui->tableWidget_personlist->setHorizontalHeaderLabels(strlist);
-//    for(int i = 0; i < m_tableData.size(); i++)
-//        for(int j = 0; j < icolumn; j++)
-//            ui->tableWidget_personlist->setItem(i, j, new QTableWidgetItem(m_tableData[m_tableData.size()-1-i][j+1]));
-
-//    // 加载第一个病人的图片
-//    if(m_tableData.size() > 0)
-//    {
-//        int ind = m_tableData.size() - 1; // 选中最后一个
-//        loadUserImgs(m_tableData[m_tableData.size() - 1-ind][m_tableData[0].size()-1]);
-//        ui->tableWidget_personlist->setCurrentCell(ind, 0);
-//    }
-//    else
-//    {
-//        ui->listWidget_historyimage->clear();
-//        OpenCVTool::showImage(m_matInitImg, ui->label_picture);
-//    }
-//}
-
-//// 加载病案图像
-//void MainWindow::loadUserImgs(QString strPath)
-//{
-//    ui->listWidget_historyimage->clear();
-//    m_vecUserImgs.clear();
-//    qDebug()<<strPath;
-
-//    // 判断文件夹是否存在
-//    QDir dir(strPath);
-//    if(dir.exists())
-//    {
-//        // 遍历文件夹
-//        QStringList filters;
-//        filters<<QString("*.png");
-//        dir.setNameFilters(filters);
-//        dir.setFilter(QDir::Files);
-//        QString strname, strfile;
-//        foreach(QFileInfo mfi, dir.entryInfoList())
-//        {
-//            // 读取图像
-//            strname = mfi.fileName();
-//            //            qDebug()<< "File :" << strname;
-//            strfile = strPath + "//" + strname;
-//            Mat img = imread(strfile.toStdString(), CV_LOAD_IMAGE_GRAYSCALE);
-//            if(!img.empty())
-//            {
-//                m_vecUserImgs.push_back(img);
-
-//                // 添加缩略图
-//                QImage qimg = OpenCVTool::Mat2QImage(img);
-//                updateHistoryList(QIcon(QPixmap::fromImage(qimg).scaled(QSize(100,100))),
-//                                  strname.left(strname.size()-4));
-//            }
-//        }
-
-//        // 图片查看框显示病人的第一个图片
-//        if(!m_vecUserImgs.isEmpty())
-//            OpenCVTool::showImage(m_vecUserImgs[0], ui->label_picture);
-//        else
-//            OpenCVTool::showImage(m_matInitImg, ui->label_picture);
-//    }
-//}
-
-//// 单击病例
-//void MainWindow::on_tableWidget_personlist_clicked(const QModelIndex &index)
-//{
-//    int ind = index.row();
-//    if(!m_tableData.empty() && ind < m_tableData.size() && ind >= 0)
-//    {
-//        ind = m_tableData.size() - 1 - ind;
-//        loadUserImgs(m_tableData[ind][m_tableData[ind].size()-1]);
-//    }
-//}
-
-//// 双击病例
-//void MainWindow::on_tableWidget_personlist_doubleClicked(const QModelIndex &index)
-//{
-//    ui->stackedWidget->setCurrentIndex(0);
-//    ui->stackedWidget_buttons->setCurrentIndex(1);
-
-//    int ind = index.row();
-//    if(!m_tableData.empty() && ind < m_tableData.size() && ind >= 0)
-//    {
-//        m_iSelectItem = m_tableData.size() - 1 - ind;
-//        ui->lineEdit_name->setText(m_tableData[ind][1]);
-//        ui->comboBox_sex->setCurrentText(m_tableData[ind][2]);
-//        ui->lineEdit_checkpos->setText(m_tableData[ind][3]);
-//        ui->spinBox_age->setValue(m_tableData[ind][4].toInt());
-//        ui->dateEdit_date->setDate(QDate().fromString(m_tableData[ind][5]));
-//        ui->lineEdit_checkroom->setText(m_tableData[ind][6]);
-//        ui->lineEdit_menzhenno->setText(m_tableData[ind][7]);
-//        ui->lineEdit_zhuyuanno->setText(m_tableData[ind][8]);
-//        ui->lineEdit_bingquno->setText(m_tableData[ind][9]);
-//        ui->lineEdit_chuangweino->setText(m_tableData[ind][10]);
-//        ui->lineEdit_tocheckdoctor->setText(m_tableData[ind][11]);
-//        ui->lineEdit_checkdoctor->setText(m_tableData[ind][12]);
-//        ui->textEdit_comment->setText(m_tableData[ind][13]);
-
-//        QString str = QString("%1").arg(m_vecUserImgs.size());
-//        ui->label_imgcount->setText(str);
-//    }
-//}
-
-//// 切换按钮组
-//void MainWindow::on_stackedWidget_buttons_currentChanged(int arg1)
-//{
-//    bool flag = (arg1 == 1);
-//    ui->lineEdit_name->setDisabled(flag);
-//    ui->comboBox_sex->setDisabled(flag);
-//    ui->lineEdit_checkpos->setDisabled(flag);
-//    ui->spinBox_age->setDisabled(flag);
-//    ui->dateEdit_date->setDisabled(flag);
-//    ui->lineEdit_checkroom->setDisabled(flag);
-//    ui->lineEdit_menzhenno->setDisabled(flag);
-//    ui->lineEdit_zhuyuanno->setDisabled(flag);
-//    ui->lineEdit_bingquno->setDisabled(flag);
-//    ui->lineEdit_chuangweino->setDisabled(flag);
-//    ui->lineEdit_tocheckdoctor->setDisabled(flag);
-//    ui->lineEdit_checkdoctor->setDisabled(flag);
-//    ui->textEdit_comment->setDisabled(flag);
-//}
-
-//// 返回病例浏览
-//void MainWindow::on_pushButton_returnpage_clicked()
-//{
-//    on_pushButton_illbrower_clicked();
-//}
-
-//// 删除数据项
-//void MainWindow::on_pushButton_deleteitem_clicked()
-//{
-//    // 删除数据项
-//    if(!m_tableData.empty() && m_iSelectItem < m_tableData.size() && m_iSelectItem >= 0)
-//        DataBase::getInstance()->deleteItem(m_tableData[m_tableData.size() - 1-m_iSelectItem][0]);
-
-//    // 删除后返回
-//    on_pushButton_returnpage_clicked();
-//}
-
-//// 导出数据
-//void MainWindow::on_pushButton_exportdata_clicked()
-//{
-
-//}
 
 // 系统时间设置
 void MainWindow::on_action_settime_triggered()
@@ -600,25 +303,6 @@ void MainWindow::on_action_calib_triggered()
     ui->stackedWidget->setCurrentIndex(3);
 }
 
-//// 数据统计
-//void MainWindow::on_action_datastat_triggered()
-//{
-//    DataStatDlg statdlg;
-//    statdlg.performDlg();
-//}
-
-//// 资料管理
-//void MainWindow::on_action_datamanage_triggered()
-//{
-//    DataManageDlg managedlg;
-//    managedlg.performDlg();
-
-//    // 更新数据库
-//    if(ui->stackedWidget->currentIndex() == 2)
-//        on_pushButton_illbrower_clicked();
-//}
-
-// 打开串口
 void MainWindow::openSerialPort()
 {
     //查找可用串口
@@ -705,70 +389,6 @@ void MainWindow::sendCommand(QString command, QString arg1, QString arg2)
         qDebug()<<"send command - "<<m_strSendCommand;
     }
 }
-
-//// 更新历史列表
-//void MainWindow::updateHistoryList(QIcon icon, QString strname)
-//{
-//    QString str = QString("%1_%2").arg(ui->listWidget_historyimage->count()+1).arg(strname);
-//    QListWidgetItem *item = new QListWidgetItem(icon, str);
-//    ui->listWidget_historyimage->addItem(item);
-//    ui->listWidget_historyimage->setCurrentRow(ui->listWidget_historyimage->count()-1); // 选中最后一个
-//}
-
-//// 抓取图像后更新历史列表
-//void MainWindow::updateHistoryList_Capture(QIcon icon, QString strname)
-//{
-//    // 更新历史列表
-//    updateHistoryList(icon, strname);
-
-//    // 保存图像
-//    m_camerathd.saveImages(m_strPersonPath); // 随时保存
-//}
-
-//// 上一个图片
-//void MainWindow::on_pushButton_historypre_clicked()
-//{
-//    int irow = ui->listWidget_historyimage->currentRow();
-//    if(irow > 0)
-//        ui->listWidget_historyimage->setCurrentRow(irow-1);
-//}
-
-//// 下一个图片
-//void MainWindow::on_pushButton_historynext_clicked()
-//{
-//    int irow = ui->listWidget_historyimage->currentRow();
-//    int icount = ui->listWidget_historyimage->count();
-//    if(irow < icount-1)
-//        ui->listWidget_historyimage->setCurrentRow(irow+1);
-//}
-
-//// 选择了不同的图片
-//void MainWindow::on_listWidget_historyimage_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
-//{
-//    // 选中的变颜色
-//    if(ui->listWidget_historyimage->currentRow() >= 0)
-//    {
-//        if(previous != NULL)
-//            previous->setBackgroundColor(QColor(255, 255, 255));
-//        current->setBackgroundColor(QColor(0, 128, 0));
-//    }
-//}
-
-//// 单击在图片查看区显示图片
-//void MainWindow::on_listWidget_historyimage_currentRowChanged(int currentRow)
-//{
-//    //ui->tabWidget_show->setCurrentIndex(1); // 切换到图片显示框
-//    if(m_bIsPersonInfo)
-//    {
-//        if(!m_camerathd.m_vecSnapImgs.isEmpty() && currentRow >= 0 && currentRow < m_camerathd.m_vecSnapImgs.size())
-//            OpenCVTool::showImage(m_camerathd.m_vecSnapImgs[currentRow].matImg, ui->label_picture);
-//    }
-//    else
-//    {
-//        if(!m_vecUserImgs.isEmpty() && currentRow >= 0 && currentRow < m_vecUserImgs.size())
-//            OpenCVTool::showImage(m_vecUserImgs[currentRow], ui->label_picture);
-//    }
-//}
 
 // X+
 void MainWindow::on_pushButton_calibXadd_clicked()
@@ -966,116 +586,6 @@ void MainWindow::on_horizontalSlider_bright_valueChanged(int value)
 //    m_camerathd.m_iCalibration = 2;
 //}
 
-//// 病人信息改变
-//void MainWindow::on_lineEdit_name_textChanged(const QString &arg1)
-//{
-//    if(m_bIsPersonInfo)
-//    {
-//        m_camerathd.m_strName = arg1;
-//        on_pushButton_saveperson_clicked();
-//    }
-//}
-//void MainWindow::on_comboBox_sex_currentIndexChanged(const QString &arg1)
-//{
-//    if(m_bIsPersonInfo)
-//    {
-//        m_camerathd.m_strSex = arg1;
-//        on_pushButton_saveperson_clicked();
-//    }
-//}
-//void MainWindow::on_lineEdit_checkpos_textChanged(const QString &arg1)
-//{
-//    if(m_bIsPersonInfo)
-//    {
-//        m_camerathd.m_strCheckpos = arg1;
-//        on_pushButton_saveperson_clicked();
-//    }
-//}
-//void MainWindow::on_spinBox_age_valueChanged(int arg1)
-//{
-//    if(m_bIsPersonInfo)
-//    {
-//        qDebug()<<"on_spinBox_age_valueChanged";
-//        m_camerathd.m_strAge = QString::number(arg1);
-//        on_pushButton_saveperson_clicked();
-//    }
-//}
-//void MainWindow::on_dateEdit_date_dateChanged(const QDate &date)
-//{
-//    if(m_bIsPersonInfo)
-//    {
-//        m_camerathd.m_dateCheck = date;
-//        on_pushButton_saveperson_clicked();
-//    }
-//}
-//void MainWindow::on_lineEdit_checkroom_textChanged(const QString &arg1)
-//{
-//    if(m_bIsPersonInfo)
-//    {
-//        m_camerathd.m_strCheckRoom = arg1;
-//        on_pushButton_saveperson_clicked();
-//    }
-//}
-//void MainWindow::on_lineEdit_menzhenno_textChanged(const QString &arg1)
-//{
-//    if(m_bIsPersonInfo)
-//    {
-//        m_camerathd.m_strMenzhenno = arg1;
-//        on_pushButton_saveperson_clicked();
-//    }
-//}
-//void MainWindow::on_lineEdit_zhuyuanno_textChanged(const QString &arg1)
-//{
-//    if(m_bIsPersonInfo)
-//    {
-//        m_camerathd.m_strZhuyuanno = arg1;
-//        on_pushButton_saveperson_clicked();
-//    }
-//}
-//void MainWindow::on_lineEdit_bingquno_textChanged(const QString &arg1)
-//{
-//    if(m_bIsPersonInfo)
-//    {
-//        m_camerathd.m_strBingquno = arg1;
-//        on_pushButton_saveperson_clicked();
-//    }
-//}
-//void MainWindow::on_lineEdit_chuangweino_textChanged(const QString &arg1)
-//{
-//    if(m_bIsPersonInfo)
-//    {
-//        m_camerathd.m_strChuangweino = arg1;
-//        on_pushButton_saveperson_clicked();
-//    }
-//}
-//void MainWindow::on_lineEdit_tocheckdoctor_textChanged(const QString &arg1)
-//{
-//    if(m_bIsPersonInfo)
-//    {
-//        //        qDebug()<<"on_lineEdit_tocheckdoctor_textChanged";
-//        m_camerathd.m_strTocheckdoctor = arg1;
-//        on_pushButton_saveperson_clicked();
-//    }
-//}
-//void MainWindow::on_lineEdit_checkdoctor_textChanged(const QString &arg1)
-//{
-//    if(m_bIsPersonInfo)
-//    {
-//        //        qDebug()<<"on_lineEdit_checkdoctor_textChanged";
-//        m_camerathd.m_strCheckdoctor = arg1;
-//        on_pushButton_saveperson_clicked();
-//    }
-//}
-//void MainWindow::on_textEdit_comment_textChanged()
-//{
-//    if(m_bIsPersonInfo)
-//    {
-//        //        qDebug()<<"on_textEdit_comment_textChanged";
-//        m_camerathd.m_strComment = ui->textEdit_comment->toPlainText();
-//        on_pushButton_saveperson_clicked();
-//    }
-//}
-
 // 关机
 void MainWindow::on_action_close_triggered()
 {
@@ -1119,20 +629,6 @@ bool MainWindow::shutdownWindows()
 //        return false;
     return true;
 }
-
-//// 修改了选项页
-//void MainWindow::on_stackedWidget_currentChanged(int arg1)
-//{
-//    if(arg1 != 3)
-//        m_camerathd.m_iCalibration = 0;
-//}
-
-//// 拍照
-//void MainWindow::on_pushButton_capture_clicked()
-//{
-//    //    if(m_bIsPersonInfo) // 用户界面才能拍照
-//    m_camerathd.setSaveImg();
-//}
 
 //// 白光模式
 void MainWindow::on_pushButton_whitemode_clicked()
@@ -1233,10 +729,10 @@ QMessageBox::about(NULL, "about", "Test123456");
 }
 
 //抓取三维场景图像
-void MainWindow::grab3dscene()
-{
-    auto img=this->grab(QRect(796,376,800,631));
-    ui->label_4->setPixmap(img);
-    qDebug()<<"grab finish";
+//void MainWindow::grab3dscene()
+//{
+//    auto img=this->grab(QRect(796,376,800,631));
+//    ui->label_4->setPixmap(img);
+//    qDebug()<<"grab finish";
 
-}
+//}
