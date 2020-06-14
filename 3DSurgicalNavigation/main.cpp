@@ -21,6 +21,12 @@ int main() {
 	Model3D model;
 	Camera cam("3240N_MatlabCalib.yml");
 	Frame frame(cam.getImageMemory(), cam.getcammat(), cam.getcamdiscoeff(), cam.getimgsize());
+	////co-axial
+	//while (1) {
+	//	cam.run();
+	//	frame.capframe();
+	//	if (!frame.ShowCamFrameToScreen()) break;
+	//}
 	//show img
 	while (1) {
 		cam.run();

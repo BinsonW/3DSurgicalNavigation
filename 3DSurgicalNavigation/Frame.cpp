@@ -5,8 +5,8 @@
 Frame::Frame(char * imagemem, const Mat cammat, const Mat camdiscoeff, const Size imgsize_cam) :
 	camframe(1024, 1280, CV_8UC1, imagemem),
 	//projector calibration 13th
-	projroi(0, 160, 1048, 801 - 160),
-	projsize(1048 + 95, 801 - 160)
+	projroi(0, 175, 1105, 641),
+	projsize(1143, 641)
 {
 	//define camera
 	CameraMatrix = cammat;
@@ -21,16 +21,23 @@ Frame::Frame(char * imagemem, const Mat cammat, const Mat camdiscoeff, const Siz
 	//initUndistortRectifyMap(CameraMatrix, distCoefficients, noArray(), getOptimalNewCameraMatrix(CameraMatrix, distCoefficients, Size(1280, 1024), 1, Size(1280, 1024), 0), Size(1280, 1024), CV_16SC2, undistortmap1, undistortmap2);
 	//point_3D
 	//rmar.p3D.push_back(Point3f(100, 100, 0));
-	rmar.p3D.push_back(Point3f(125, 125, 0));
-	rmar.p3D.push_back(Point3f(125, 0, 0));
-	rmar.p3D.push_back(Point3f(0, 125, 0));
-	rmar.p3D.push_back(Point3f(0, 25, 0));
+	//rmar.p3D.push_back(Point3f(125, 125, 0));
+	//rmar.p3D.push_back(Point3f(125, 0, 0));
+	//rmar.p3D.push_back(Point3f(0, 125, 0));
+	//rmar.p3D.push_back(Point3f(0, 25, 0));
+	//rmar.p3D.push_back(Point3f(0, 0, -75));
+
+	rmar.p3D.push_back(Point3f(40, 0, 0));
+	rmar.p3D.push_back(Point3f(0, -70, 0));
+	rmar.p3D.push_back(Point3f(0, 50, 0));
+	rmar.p3D.push_back(Point3f(-60,0, 0));
+
 
 	//Calibration board
-	//hmar.p3D.push_back(Point3f(193, 142.5, 0.0));
-	//hmar.p3D.push_back(Point3f(193, 8, 0.0));
-	//hmar.p3D.push_back(Point3f(8, 142.5, 0.0));
-	//hmar.p3D.push_back(Point3f(8, 7.5, 0.0));
+	//hmar.p3D.push_back(Point3f(8, 7.5, 0.0));//1
+	//hmar.p3D.push_back(Point3f(8, 142.5, 0.0));//4
+	//hmar.p3D.push_back(Point3f(193, 8, 0.0));//2
+	//hmar.p3D.push_back(Point3f(193, 142.5, 0.0));//3
 
 	//Calibration board translate
 	//hmar.p3D.push_back(Point3f(193, 142.5, -184));
@@ -39,10 +46,21 @@ Frame::Frame(char * imagemem, const Mat cammat, const Mat camdiscoeff, const Siz
 	//hmar.p3D.push_back(Point3f(8, 7.5, -184));
 
 	////Phantom
-	hmar.p3D.push_back(Point3f(-30.4300, -27.7672, -1.6042));
-	hmar.p3D.push_back(Point3f(-36.7909, 36.8750, -4.5509));
-	hmar.p3D.push_back(Point3f(33.6753, -30.5107, 0.6414));
-	hmar.p3D.push_back(Point3f(32.2384, 40.1942, -5.7228));
+	//hmar.p3D.push_back(Point3f(32.2384, 40.1942, -5.7228));//3
+	//hmar.p3D.push_back(Point3f(33.6753, -30.5107, 0.6414));//2
+	//hmar.p3D.push_back(Point3f(-36.7909, 36.8750, -4.5509));//4
+	//hmar.p3D.push_back(Point3f(-30.4300, -27.7672, -1.6042));//1
+
+	//////wangjixue
+	hmar.p3D.push_back(Point3f(61.9863, 15.449, -100.276));//4
+	hmar.p3D.push_back(Point3f(57.8476, -26.1834, -91.0898));//3
+
+	hmar.p3D.push_back(Point3f(23.5789, 18.3345, -114.8752));//1
+	hmar.p3D.push_back(Point3f(17.9685, -26.6555, -108.2332));//2
+	//hmar.p3D.push_back(Point3f(15.449,61.9863,  -100.276));//4
+	//hmar.p3D.push_back(Point3f(-26.1834,57.8476,  -91.0898));//3
+	//hmar.p3D.push_back(Point3f(18.3345,23.5789,  -114.8752));//1
+	//hmar.p3D.push_back(Point3f(-26.6555,17.9685,  -108.2332));//2
 
 	glmar.color = Scalar(0, 255, 0);
 	rmar.color = Scalar(0, 255, 0);
@@ -363,8 +381,8 @@ bool Frame::calHRpose()
 	KeyPoint::convert(hmar.p2Dmean, hmar.p2Dm_P2f);
 	KeyPoint::convert(rmar.p2Dmean, rmar.p2Dm_P2f);
 	//cout << CameraMatrix << distCoefficients;
-	solvePnP(hmar.p3D, hmar.p2Dm_P2f, CameraMatrix, distCoefficients, hmar.rvec, hmar.tvec/*,0, SOLVEPNP_P3P*/);
-	solvePnP(rmar.p3D, rmar.p2Dm_P2f, CameraMatrix, distCoefficients, rmar.rvec, rmar.tvec);
+	solvePnP(hmar.p3D, hmar.p2Dm_P2f, CameraMatrix, distCoefficients, hmar.rvec, hmar.tvec/*,0, SOLVEPNP_EPNP*/);
+	solvePnP(rmar.p3D, rmar.p2Dm_P2f, CameraMatrix, distCoefficients, rmar.rvec, rmar.tvec/*,0, SOLVEPNP_P3P*/);
 	Affine3d h((Vec3d)hmar.rvec, (Vec3d)hmar.tvec);
 	Affine3d r((Vec3d)rmar.rvec, (Vec3d)rmar.tvec);
 	headpose = h;
@@ -374,7 +392,7 @@ bool Frame::calHRpose()
 bool Frame::calRpose()
 {
 	KeyPoint::convert(rmar.p2Dmean, rmar.p2Dm_P2f);
-	solvePnP(rmar.p3D, rmar.p2Dm_P2f, CameraMatrix, distCoefficients, rmar.rvec, rmar.tvec, !rmar.tvec.empty());
+	solvePnP(rmar.p3D, rmar.p2Dm_P2f, CameraMatrix, distCoefficients, rmar.rvec, rmar.tvec, !rmar.tvec.empty()/*, SOLVEPNP_P3P*/);
 	//cout << rmar.tvec;
 	Affine3d r((Vec3d)rmar.rvec, (Vec3d)rmar.tvec);
 	refpose = r;
@@ -392,18 +410,19 @@ bool Frame::Navigate(Mat projimg)
 
 	//construct projact frame
 	frame_clip = frame(projroi);
-	projimg = projimg(Range(116, 580), Range(0, 760));
+	projimg = projimg(Range(projroi.y * 0.724609375, (projroi.y + projroi.height) * 0.724609375), Range(0, projroi.width * 0.724609375));
 	projimg.copyTo(projimg_add);
-	resize(projimg_add, projimg_add, Size(1048, 641));
+	resize(projimg_add, projimg_add, projroi.size());
 	//projframe = Mat(bottomedge - topedge, rightedge, CV_8UC3, Scalar(0, 0, 0));
 	frame_clip += projimg_add;
 	flip(projimg, projimg, 1);
 	moveframe(projimg);
-	copyMakeBorder(projimg, projimg, 0, 0, 0, 68, BORDER_ISOLATED, Scalar::all(0));
+	copyMakeBorder(projimg, projimg, 0, 0, 0, (1143-projroi.width)*0.724609375, BORDER_ISOLATED, Scalar::all(0));
 	rectangle(frame, projroi, Scalar(0, 255, 0));
-	imshow("screen window", frame);
 	imshow("project window", projimg);
+	imshow("screen window", frame);
 	int c = waitKey(1);
+	//cout << c;
 	switch (c)
 	{
 	case 'w':
@@ -458,6 +477,8 @@ bool Frame::Showgreen() {
 }
 bool Frame::ShowCamFrameToScreen()
 {
+	cvtColor(frame, frame, cv::COLOR_GRAY2BGR);
+	rectangle(frame, projroi, Scalar(0, 255, 0));
 	imshow("screen window", frame);
 	char c = static_cast<char>(waitKey(1));
 	if(c!=32)	return true;
@@ -465,7 +486,7 @@ bool Frame::ShowCamFrameToScreen()
 }
 bool Frame::seperatemar_p2Dlast()
 {
-	if (refatleft)
+	if (refinlatter)
 	{
 		hmar.p2Dlast.assign(glmar.p2Dlast.begin(), glmar.p2Dlast.begin() + 4);
 		rmar.p2Dlast.assign(glmar.p2Dlast.begin() + 4, glmar.p2Dlast.begin() + 8);
@@ -478,14 +499,50 @@ bool Frame::seperatemar_p2Dlast()
 }
 bool Frame::seperatemar_p2Dmean()
 {
-	if (refatleft)
+	if (refinlatter)
 	{
 		hmar.p2Dmean.assign(glmar.p2Dmean.begin(), glmar.p2Dmean.begin() + 4);
 		rmar.p2Dmean.assign(glmar.p2Dmean.begin() + 4, glmar.p2Dmean.begin() + 8);
 	}
 	else {
+		//ÏÈ²Î¿¼¼Ü
 		rmar.p2Dmean.assign(glmar.p2Dmean.begin(), glmar.p2Dmean.begin() + 4);
 		hmar.p2Dmean.assign(glmar.p2Dmean.begin() + 4, glmar.p2Dmean.begin() + 8);
 	}
 	return true;
+}
+int Frame::ShowCamFrameToProjectorcoaxial()
+{
+	frame.copyTo(frame_clip);
+	frame_clip = frame_clip(projroi);
+
+	//resize(frame_clip, frame_clip, Size(759, 464));
+
+	flip(frame_clip, frame_clip, 1);
+	//copyMakeBorder(frame_clip, frame_clip, 0, 0, 0,69, BORDER_ISOLATED, Scalar::all(0));
+	copyMakeBorder(frame_clip, frame_clip, 0, 0, 0, projsize.width - projroi.width, BORDER_ISOLATED, Scalar::all(0));
+	cvtColor(frame, frame, cv::COLOR_GRAY2BGR);
+	rectangle(frame, projroi, Scalar(0, 255, 0), 5);
+	imshow("screen window", frame);
+	imshow("project window", frame_clip);
+	char c = (char)waitKey(1);
+	switch (c) {
+	case 'w':
+		vert--;
+		cout << "up 1 pix\n";
+		break;
+	case 'a':
+		hori--;
+		cout << "left 1 pix\n";
+		break;
+	case 's':
+		vert++;
+		cout << "down 1 pix\n";
+		break;
+	case 'd':
+		hori++;
+		cout << "right 1 pix\n";
+		break;
+	}
+	return 1;
 }

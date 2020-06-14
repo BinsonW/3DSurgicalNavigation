@@ -11,6 +11,8 @@ class Model3D
 private:
 	viz::Camera ProjectCamera;
 	viz::WCloud tumor;
+	viz::WCloud inc;
+	viz::WCloud point;
 	viz::WCylinder cylinder;
 	viz::WSphere sphere;
 	Mat circlegrid = imread("circlegrid.jpg");

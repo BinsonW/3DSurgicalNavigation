@@ -9,6 +9,17 @@ Frame::marker::marker() {
 Frame::marker::~marker() {}
 bool Frame::marker::sortp()
 {
+#ifdef rotateCPI
+	//sort y 从小到大 即从上到下
+	sort(p2Dlast.begin(), p2Dlast.end(), Frame::marker::compy);
+	//sort x 两两比较，从大到小 即从右到左
+	auto ptr = p2Dlast.begin();
+	while (p2Dlast.end() - 1 != (ptr + 1)) {
+		sort(ptr, ptr + 2, Frame::marker::compx_rev);
+		ptr = ptr + 2;
+	}
+	sort(ptr, ptr + 2, Frame::marker::compx_rev);
+#else 
 	//sort x
 	sort(p2Dlast.begin(), p2Dlast.end(), Frame::marker::compx);
 	//sort y
@@ -18,6 +29,8 @@ bool Frame::marker::sortp()
 		ptr = ptr + 2;
 	}
 	sort(ptr, ptr + 2, Frame::marker::compy);
+#endif // 0
+
 	return true;
 }
 bool Frame::marker::compx(KeyPoint i, KeyPoint j)
@@ -28,6 +41,11 @@ bool Frame::marker::compx(KeyPoint i, KeyPoint j)
 bool Frame::marker::compy(KeyPoint i, KeyPoint j)
 {
 	if (i.pt.y < j.pt.y) return true;
+	else return false;
+}
+bool Frame::marker::compx_rev(KeyPoint i, KeyPoint j)
+{
+	if (i.pt.x > j.pt.x) return true;
 	else return false;
 }
 bool Frame::marker::iseqsize()

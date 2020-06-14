@@ -4,6 +4,7 @@
 #include <vector>
 #include <stdexcept>
 #include "Camera.h"
+#define rotateCPI
 using namespace std;
 using namespace cv;
 class Frame
@@ -38,6 +39,7 @@ private:
 		bool sortp();
 		static bool compx(KeyPoint,KeyPoint);
 		static bool compy(KeyPoint,KeyPoint);
+		static bool compx_rev(KeyPoint i, KeyPoint j);
 		bool caldist();
 		bool calarea();
 		bool calmean();
@@ -45,7 +47,7 @@ private:
 	};
 	Rect projroi;
 	Size projsize;
-	bool refatleft = true;
+	bool refinlatter = true;
 	//bool keepregister=true;
 	Mat frame,camframe,frame_clip,projimg_add,undistortmap1,undistortmap2,CameraMatrix,distCoefficients; 
 	Size imgsize_Cam;
@@ -79,6 +81,7 @@ public:
 	int ShowCamFrameToProjector();
 	bool Showgreen();
 	bool ShowCamFrameToScreen();
+	int ShowCamFrameToProjectorcoaxial();
 	bool inimarparam();
 	bool globalsearch();
 	bool capframe();
